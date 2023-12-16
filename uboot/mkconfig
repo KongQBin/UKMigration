@@ -53,6 +53,10 @@ rm -f asm-$2/arch
 if [ -z "$6" -o "$6" = "NULL" ] ; then
 	ln -s ${LNPREFIX}arch-$3 asm-$2/arch
 else
+	# ${LNPREFIX}arch-$6 该路径不存在
+	# 竟然还能有这种操作
+	# ln -s "一个不存在的路径" "目标路径"
+	# 会返回成功 cur ln ver: 8.28
 	ln -s ${LNPREFIX}arch-$6 asm-$2/arch
 fi
 

@@ -2585,10 +2585,9 @@ smdkv210single_config :	unconfig
 x210_nand_config :	unconfig
 	@$(MKCONFIG) $(@:_config=) arm s5pc11x x210 samsung s5pc110
 	@echo "TEXT_BASE = 0xc3e00000" > $(obj)board/samsung/x210/config.mk
-
 x210_sd_config :	unconfig
 	@$(MKCONFIG) $(@:_config=) arm s5pc11x x210 samsung s5pc110
-	@echo "TEXT_BASE = 0xc3e00000" > $(obj)board/samsung/x210/config.mk
+	@echo "#虚拟地址，实际可能为0x23e00000或者33e00000\nTEXT_BASE = 0xc3e00000" > $(obj)board/samsung/x210/config.mk
 
 smdkv210single_rev02_config :	unconfig
 	@$(MKCONFIG) $(@:_config=) arm s5pc11x smdkc110 samsung s5pc110

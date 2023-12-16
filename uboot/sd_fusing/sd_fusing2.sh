@@ -1,6 +1,6 @@
 #
 # Copyright (C) 2010 Samsung Electronics Co., Ltd.
-#              http://www.samsung.com/
+              http://www.samsung.com/
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License version 2 as
@@ -18,11 +18,14 @@ fi
 
 if [ $1 = $reader_type1 ]
 then 
-    partition1="$11"
-    partition2="$12"
-    partition3="$13"
-    partition4="$14"
-
+    #partition1="$11"
+    #partition2="$12"
+    #partition3="$13"
+    #partition4="$14"
+    partition1="$1"1
+    partition2="$1"2
+    partition3="$1"3
+    partition4="$1"4
 elif [ $1 = $reader_type2 ]
 then 
     partition1="$1p1"
@@ -57,6 +60,8 @@ umount $partition1 2> /dev/null
 umount $partition2 2> /dev/null
 umount $partition3 2> /dev/null
 umount $partition4 2> /dev/null
+
+sleep 3
 
 echo "mkfs.vfat -F 32 $partition1"
 mkfs.vfat -F 32 $partition1

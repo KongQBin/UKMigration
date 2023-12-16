@@ -34,13 +34,13 @@
  */
 
 typedef	struct	global_data {
-	bd_t		*bd;
+	bd_t		*bd;		// 开发板相关信息
 	unsigned long	flags;
-	unsigned long	baudrate;
-	unsigned long	have_console;	/* serial_init() was called */
+	unsigned long	baudrate;	// 波特率
+	unsigned long	have_console;	/* 控制台 serial_init() was called */
 	unsigned long	reloc_off;	/* Relocation Offset */
-	unsigned long	env_addr;	/* Address  of Environment struct */
-	unsigned long	env_valid;	/* Checksum of Environment valid? */
+	unsigned long	env_addr;	/* 环境变量地址 Address  of Environment struct */
+	unsigned long	env_valid;	/* 内存中的环境变量是否可用 Checksum of Environment valid? */
 	unsigned long	fb_base;	/* base address of frame buffer */
 #ifdef CONFIG_VFD
 	unsigned char	vfd_type;	/* display type */

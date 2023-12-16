@@ -460,7 +460,7 @@ void start_armboot (void)
 
 	/* Pointer is writable since we allocated a register for it */
 #ifdef CONFIG_MEMORY_UPPER_CODE /* by scsuh */
-	ulong gd_base;
+	ulong gd_base;	// gd基地址
 
 	gd_base = CFG_UBOOT_BASE + CFG_UBOOT_SIZE - CFG_MALLOC_LEN - CFG_STACK_SIZE - sizeof(gd_t);
 #ifdef CONFIG_USE_IRQ
@@ -472,7 +472,7 @@ void start_armboot (void)
 #endif
 
 	/* compiler optimization barrier needed for GCC >= 3.4 */
-	__asm__ __volatile__("": : :"memory");
+	__asm__ __volatile__("": : :"memory");	// 防止高版本gcc的优化
 
 	memset ((void*)gd, 0, sizeof (gd_t));
 	gd->bd = (bd_t*)((char*)gd - sizeof(bd_t));

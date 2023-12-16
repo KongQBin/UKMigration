@@ -89,7 +89,7 @@ int board_init(void)
 	smc9115_pre_init();
 #endif
 
-#ifdef CONFIG_DRIVER_DM9000
+#ifdef CONFIG_DRIVER_DM9000	// 配置网卡 GPIO、端口
 	dm9000_pre_init();
 #endif
 
