@@ -1,0 +1,14 @@
+/home/kbin/jduboot/cpu/s5pc11x/start.S
+/home/kbin/jduboot/lib_arm/board.c
+/home/kbin/jduboot/common/console.c
+/home/kbin/jduboot/cpu/s5pc11x/s5pc110/cpu_init.S
+/home/kbin/jduboot/common/env_movi.c
+/home/kbin/jduboot/include/asm-arm/global_data.h
+/home/kbin/jduboot/cpu/s5pc11x/interrupts.c
+/home/kbin/jduboot/board/samsung/x210/lowlevel_init.S
+/home/kbin/jduboot/cpu/s5pc11x/movi.c
+/home/kbin/jduboot/cpu/s5pc11x/serial.c
+/home/kbin/jduboot/include/asm-arm/u-boot.h
+/home/kbin/jduboot/include/configs/x210_sd.h
+/home/kbin/jduboot/board/samsung/x210/x210.c
+
