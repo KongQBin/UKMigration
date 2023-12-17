@@ -84,7 +84,7 @@ extern void dataflash_print_info(void);
 #ifndef CONFIG_IDENT_STRING
 #define CONFIG_IDENT_STRING ""
 #endif
-
+// U_BOOT_VERSION它在编译时的Makefile中
 const char version_string[] =
 	U_BOOT_VERSION" (" __DATE__ " - " __TIME__ ")"CONFIG_IDENT_STRING;
 
@@ -179,6 +179,7 @@ static int init_baudrate (void)
 {
 	char tmp[64];	/* long enough for environment variables */
 	int i = getenv_r ("baudrate", tmp, sizeof (tmp));
+	/*先从环境变量取，取不到就用CONFIG_BAUDRATE*/
 	gd->bd->bi_baudrate = gd->baudrate = (i > 0)
 			? (int) simple_strtoul (tmp, NULL, 10)
 			: CONFIG_BAUDRATE;
@@ -331,6 +332,7 @@ static int display_banner (void)
  * gives a simple yet clear indication which part of the
  * initialization if failing.
  */
+// 在uboot的cmd中也可以使用bdinfo打印dram的配置信息
 static int display_dram_config (void)
 {
 	int i;
@@ -414,30 +416,30 @@ typedef int (init_fnc_t) (void);
 int print_cpuinfo (void); /* test-only */
 
 init_fnc_t *init_sequence[] = {
-	cpu_init,		/* basic cpu dependent setup */
+	cpu_init,		/* basic cpu dependent setup （空的，在start.S已经初始化完了）*/
 #if defined(CONFIG_SKIP_RELOCATE_UBOOT)
 	reloc_init,		/* Set the relocation done flag, must
 				   do this AFTER cpu_init(), but as soon
 				   as possible */
 #endif
-	board_init,		/* basic board dependent setup */
-	interrupt_init,		/* set up exceptions */
-	env_init,		/* initialize environment */
-	init_baudrate,		/* initialze baudrate settings */
-	serial_init,		/* serial communications setup */
-	console_init_f,		/* stage 1 init of console */
-	display_banner,		/* say that we are here */
+	board_init,		/* basic board dependent setup 网卡的初始化，gd & ad->bd中数据结构的初始化*/
+	interrupt_init,		/* set up exceptions 初始化了一个定时器 Timer4 10ms*/
+	env_init,		/* initialize environment 初始化环境变量（没做什么实质性的操作）*/
+	init_baudrate,		/* initialze baudrate settings 初始化串口波特率*/
+	serial_init,		/* serial communications setup 初始化串口（没有做什么）*/
+	console_init_f,		/* stage 1 init of console 控制台_初始化_第一阶段，第二阶段console_init_r在827行左右*/
+	display_banner,		/* say that we are here 串口输出uboot的banner（版本）*/
 #if defined(CONFIG_DISPLAY_CPUINFO)
-	print_cpuinfo,		/* display cpu info (and speed) */
+	print_cpuinfo,		/* display cpu info (and speed) 打印CPU信息（和时钟速度）*/
 #endif
 #if defined(CONFIG_DISPLAY_BOARDINFO)
-	checkboard,		/* display board info */
+	checkboard,		/* display board info 检查并打印开发板信息*/
 #endif
 #if defined(CONFIG_HARD_I2C) || defined(CONFIG_SOFT_I2C)
-	init_func_i2c,
+	init_func_i2c,		/* 并没有使用 i2c*/
 #endif
-	dram_init,		/* configure available RAM banks */
-	display_dram_config,
+	dram_init,		/* configure available RAM banks 初始化dram软件部分*/
+	display_dram_config,	/* 输出dram配置 */
 	NULL,
 };
 

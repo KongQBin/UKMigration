@@ -361,7 +361,7 @@ int console_assign (int file, char *devname)
 /* Called before relocation - use serial functions */
 int console_init_f (void)
 {
-	gd->have_console = 1;
+	gd->have_console = 1;	// 除此之外什么都没做
 
 #ifdef CONFIG_SILENT_CONSOLE
 	if (getenv("silent") != NULL)

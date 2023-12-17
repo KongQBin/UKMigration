@@ -93,8 +93,9 @@ int board_init(void)
 	dm9000_pre_init();
 #endif
 
-	gd->bd->bi_arch_number = MACH_TYPE;
-	gd->bd->bi_boot_params = (PHYS_SDRAM_1+0x100);
+	gd->bd->bi_arch_number = MACH_TYPE;		// 开发板的机器码（uboot给这个板子的唯一编号）
+	gd->bd->bi_boot_params = (PHYS_SDRAM_1+0x100);	// 0x30000100 uboot给kernel的启动传参的内存地址
+	// r0 r1 r2其中有一个就是boot_params
 
 	return 0;
 }
@@ -103,15 +104,15 @@ int dram_init(void)
 {
 	DECLARE_GLOBAL_DATA_PTR;
 
-	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;
-	gd->bd->bi_dram[0].size = PHYS_SDRAM_1_SIZE;
+	gd->bd->bi_dram[0].start = PHYS_SDRAM_1;	// 基地址
+	gd->bd->bi_dram[0].size = PHYS_SDRAM_1_SIZE;	// 大小
 
 #if defined(PHYS_SDRAM_2)
 	gd->bd->bi_dram[1].start = PHYS_SDRAM_2;
 	gd->bd->bi_dram[1].size = PHYS_SDRAM_2_SIZE;
 #endif
 
-#if defined(PHYS_SDRAM_3)
+#if defined(PHYS_SDRAM_3)				// 当前开发板没有第三片内存
 	gd->bd->bi_dram[2].start = PHYS_SDRAM_3;
 	gd->bd->bi_dram[2].size = PHYS_SDRAM_3_SIZE;
 #endif

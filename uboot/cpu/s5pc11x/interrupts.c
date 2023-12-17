@@ -175,11 +175,13 @@ void do_irq(struct pt_regs *pt_regs)
 	bad_mode();
 }
 
+// 实际在初始化定时器
 int interrupt_init(void)
 {
 
 	S5PC11X_TIMERS *const timers = S5PC11X_GetBase_TIMERS();
-
+	// Timer 4 没有输出引脚，用来做计时
+	// 但它又没有中断支持，所以只能用CPU来轮询TCNT0寄存器的方式来查看
 	/* use PWM Timer 4 because it has no output */
 	/* prescaler for Timer 4 is 16 */
 	timers->TCFG0 = 0x0f00;

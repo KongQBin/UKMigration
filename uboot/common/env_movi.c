@@ -34,6 +34,9 @@ uchar env_get_char_spec (int index)
 	return ( *((uchar *)(gd->env_addr + index)) );
 }
 
+// 对uboot中的env进行判定和简单初始化
+// 当前环境变量在SD卡，故是不能用的
+// 在start_armboot776行左右调用env_relocate进行重定位之后，才变得可用
 int env_init(void)
 {
 #if defined(ENV_IS_EMBEDDED)

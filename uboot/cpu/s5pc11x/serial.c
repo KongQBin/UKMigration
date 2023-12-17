@@ -49,7 +49,7 @@ void serial_setbrg(void)
 /*
  * Initialise the serial port with the given baudrate. The settings
  * are always 8 data bits, no parity, 1 stop bit, no start bits.
- *
+ * 什么都没做，汇编阶段已经被初始化过了
  */
 int serial_init(void)
 {
