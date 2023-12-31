@@ -12,3 +12,19 @@
 /home/kbin/jduboot/include/configs/x210_sd.h
 /home/kbin/jduboot/board/samsung/x210/x210.c
 
+/home/kbin/jduboot/board/samsung/x210/x210.c
+/home/kbin/jduboot/common/console.c
+/home/kbin/jduboot/common/devices.c
+/home/kbin/jduboot/common/env_common.c
+/home/kbin/jduboot/common/env_movi.c
+/home/kbin/jduboot/common/exports.c
+/home/kbin/jduboot/common/main.c
+/home/kbin/jduboot/cpu/s5pc11x/cpu.c
+/home/kbin/jduboot/drivers/mmc/mmc.c
+/home/kbin/jduboot/drivers/mmc/s3c_hsmmc.c
+/home/kbin/jduboot/drivers/video/logo.c
+/home/kbin/jduboot/drivers/video/mpadfb.c
+/home/kbin/jduboot/lib_arm/board.c
+/home/kbin/jduboot/lib_arm/interrupts.c
+/home/kbin/jduboot/net/eth.c
+

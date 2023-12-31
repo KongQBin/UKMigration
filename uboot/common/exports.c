@@ -14,6 +14,8 @@ unsigned long get_version(void)
 
 void jumptable_init (void)
 {
+	// 经查询 gd->jt 一直在作为左值，没有被使用过
+	// 根据经验，这像是在初始化类似符号表的逻辑，可能有些特殊的板子会用吧
 	int i;
 
 	gd->jt = (void **) malloc (XF_MAX * sizeof (void *));

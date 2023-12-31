@@ -620,11 +620,12 @@ extern int mcf52x2_miiphy_initialize(bd_t *bis);
 extern int ns7520_miiphy_initialize(bd_t *bis);
 extern int dm644x_eth_miiphy_initialize(bd_t *bis);
 
-
+// 和soc与网卡连接的初始化不同，这里是网卡内部的初始化
+// 对于当前开发板来说，什么都没做，是在board_init初始化的
 int eth_initialize(bd_t *bis)
 {
 #if defined(CONFIG_MII) || defined(CONFIG_CMD_MII)
-	miiphy_init();
+	miiphy_init();	    // 网卡mii层初始化，实际内部就初始化了一个链表
 #endif
 
 #if defined(CONFIG_AT91RM9200)

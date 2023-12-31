@@ -227,7 +227,7 @@ void set_default_env(void)
 #ifdef CFG_REDUNDAND_ENVIRONMENT
 	env_ptr->flags = 0xFF;
 #endif
-	env_crc_update ();
+	env_crc_update ();	// 更新crc校验
 	gd->env_valid = 1;
 }
 
@@ -236,11 +236,11 @@ void env_relocate (void)
 	DEBUGF ("%s[%d] offset = 0x%lx\n", __FUNCTION__,__LINE__,
 		gd->reloc_off);
 
-#ifdef CONFIG_AMIGAONEG3SE
+#ifdef CONFIG_AMIGAONEG3SE  // 未定义
 	enable_nvram();
 #endif
 
-#ifdef ENV_IS_EMBEDDED
+#ifdef ENV_IS_EMBEDDED	    // 环境变量是否内嵌，未定义
 	/*
 	 * The environment buffer is embedded with the text segment,
 	 * just relocate the environment pointer
@@ -251,7 +251,7 @@ void env_relocate (void)
 	/*
 	 * We must allocate a buffer for the environment
 	 */
-	env_ptr = (env_t *)malloc (CFG_ENV_SIZE);
+	env_ptr = (env_t *)malloc (CFG_ENV_SIZE);   // 开辟环境变量大小的堆空间
 	DEBUGF ("%s[%d] malloced ENV at %p\n", __FUNCTION__,__LINE__,env_ptr);
 #endif
 
@@ -262,7 +262,7 @@ void env_relocate (void)
 		puts ("*** Warning - bad CRC, using default environment\n\n");
 		show_boot_progress (-60);
 #endif
-		set_default_env();
+		set_default_env();	// 设置使用uboot代码中的环境变量
 	}
 	else {
 		env_relocate_spec ();

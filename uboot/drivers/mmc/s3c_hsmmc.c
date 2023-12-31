@@ -436,7 +436,7 @@ static int s3c_hsmmc_initialize(int channel)
 	
 	return mmc_register(mmc);
 }
-
+// 这就是驱动代码了
 int smdk_s3c_hsmmc_init(void)
 {
 #ifdef OM_PIN

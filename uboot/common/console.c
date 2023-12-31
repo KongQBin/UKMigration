@@ -485,6 +485,9 @@ int console_init_r (void)
 #else /* CFG_CONSOLE_IS_IN_ENV */
 
 /* Called after the relocation - use desired console functions */
+// 第二阶段 控制台 初始化（第一阶段是console_init_f）
+// 纯软件相关的初始化，在uboot中，实际并没有做什么有意义的活动，还是使用的串口
+// 在内核中的话就有实际的作用了，主要是提供缓冲机制
 int console_init_r (void)
 {
 	device_t *inputdev = NULL, *outputdev = NULL;

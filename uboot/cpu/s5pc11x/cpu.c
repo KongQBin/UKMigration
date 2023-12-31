@@ -232,9 +232,9 @@ int branch_status (void)
 int cpu_mmc_init(bd_t *bis)
 {
 #ifdef CONFIG_S3C_HSMMC
-	setup_hsmmc_clock();
-	setup_hsmmc_cfg_gpio();
-	return smdk_s3c_hsmmc_init();
+	setup_hsmmc_clock();		// mmc 时钟的初始化
+	setup_hsmmc_cfg_gpio();		// mmc gpio的初始化
+	return smdk_s3c_hsmmc_init();	// mmc 其它初始化
 #else
 	return 0;
 #endif

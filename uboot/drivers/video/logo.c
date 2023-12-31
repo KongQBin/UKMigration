@@ -6499,7 +6499,7 @@ static const struct picture default_xboot_logo = {
   "\0\0\0\0\0",
 };
 #endif
-
+// xian shi logo
 int display_logo(struct fb * fb)
 {
 

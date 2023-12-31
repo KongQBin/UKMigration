@@ -488,13 +488,13 @@ void start_armboot (void)
 		}
 	}
 
-#ifndef CFG_NO_FLASH
+#ifndef CFG_NO_FLASH	// Flash一般就是 nor flash 并非 nand flash，实际当前的x210并没有nor flash
 	/* configure available FLASH banks */
 	size = flash_init ();
 	display_flash_config (size);
 #endif /* CFG_NO_FLASH */
 
-#ifdef CONFIG_VFD
+#ifdef CONFIG_VFD	// 显示相关的，可能与LCD有关，当前x210实际没有使用这一套
 #	ifndef PAGE_SIZE
 #	  define PAGE_SIZE 4096
 #	endif
@@ -524,6 +524,7 @@ void start_armboot (void)
 #endif /* CONFIG_LCD */
 
 	/* armboot_start is defined in the board-specific linker script */
+	// mem_malloc_init用来初始化堆管理器
 #ifdef CONFIG_MEMORY_UPPER_CODE /* by scsuh */
 	mem_malloc_init (CFG_UBOOT_BASE + CFG_UBOOT_SIZE - CFG_MALLOC_LEN - CFG_STACK_SIZE);
 #else
@@ -533,6 +534,7 @@ void start_armboot (void)
 //******************************//
 // Board Specific
 // #if defined(CONFIG_SMDKXXXX)
+// 下面是三星一系列的开发板的初始化，用过预编译宏进行控制
 //******************************//
 
 #if defined(CONFIG_SMDK6410)
@@ -598,15 +600,15 @@ void start_armboot (void)
 
 #endif /* CONFIG_SMDKC100 */
 
-#if defined(CONFIG_X210)
+#if defined(CONFIG_X210)    // 当前开发板的初始化代码
 
-	#if defined(CONFIG_GENERIC_MMC)
+	#if defined(CONFIG_GENERIC_MMC)	// 通用mmc，初始化soc内的sd/mmc控制器
 		puts ("SD/MMC:  ");
 		mmc_exist = mmc_initialize(gd->bd);
 		if (mmc_exist != 0)
 		{
 			puts ("0 MB\n");
-#ifdef CONFIG_CHECK_X210CV3
+#ifdef CONFIG_CHECK_X210CV3 // 未定义
 			check_flash_flag=0;//check inand error!
 #endif
 		}
@@ -628,7 +630,7 @@ void start_armboot (void)
 
 	#if defined(CONFIG_CMD_NAND)
 		puts("NAND:    ");
-		nand_init();
+		nand_init();		//初始化nand版本，但当前开发板没有
 	#endif
 
 #endif /* CONFIG_X210 */
@@ -769,25 +771,25 @@ void start_armboot (void)
 	#endif
 #endif	/* CONFIG_SMDK2416 CONFIG_SMDK2450 */
 
-#ifdef CONFIG_HAS_DATAFLASH
+#ifdef CONFIG_HAS_DATAFLASH	// 小容量需求使用data flash，当前开发板没有
 	AT91F_DataflashInit();
 	dataflash_print_info();
 #endif
 
 	/* initialize environment */
-	env_relocate ();
+	env_relocate ();	// 负责从sd中将环境变量读取到ddr中的任务
 
-#ifdef CONFIG_VFD
+#ifdef CONFIG_VFD	// 未
 	/* must do this after the framebuffer is allocated */
 	drv_vfd_init();
 #endif /* CONFIG_VFD */
 
-#ifdef CONFIG_SERIAL_MULTI
+#ifdef CONFIG_SERIAL_MULTI  // 未
 	serial_initialize();
 #endif
 
 	/* IP Address */
-	gd->bd->bi_ip_addr = getenv_IPaddr ("ipaddr");
+	gd->bd->bi_ip_addr = getenv_IPaddr ("ipaddr");	// 从环境变量获取ip地址
 
 	/* MAC Address */
 	{
@@ -796,7 +798,7 @@ void start_armboot (void)
 		char *s, *e;
 		char tmp[64];
 
-		i = getenv_r ("ethaddr", tmp, sizeof (tmp));
+		i = getenv_r ("ethaddr", tmp, sizeof (tmp));	// 获取mac地址
 		s = (i > 0) ? tmp : NULL;
 
 		for (reg = 0; reg < 6; ++reg) {
@@ -816,13 +818,13 @@ void start_armboot (void)
 		}
 #endif
 	}
-
+	// 集中执行各种设备的初始化
 	devices_init ();	/* get the devices list going. */
 
 #ifdef CONFIG_CMC_PU2
 	load_sernum_ethaddr ();
 #endif /* CONFIG_CMC_PU2 */
-
+	// 跳转表初始化
 	jumptable_init ();
 #if !defined(CONFIG_SMDK6442)
 	console_init_r ();	/* fully init console as a device */
@@ -834,27 +836,27 @@ void start_armboot (void)
 #endif
 
 	/* enable exceptions */
-	enable_interrupts ();
+	enable_interrupts ();	// 启用中断，实际是空函数（lib_arm/interrupts.c）
 
 	/* Perform network card initialisation if necessary */
-#ifdef CONFIG_DRIVER_TI_EMAC
+#ifdef CONFIG_DRIVER_TI_EMAC	// 未定义
 extern void dm644x_eth_set_mac_addr (const u_int8_t *addr);
 	if (getenv ("ethaddr")) {
 		dm644x_eth_set_mac_addr(gd->bd->bi_enetaddr);
 	}
 #endif
 
-#ifdef CONFIG_DRIVER_CS8900
+#ifdef CONFIG_DRIVER_CS8900	// 未定义	(当前开发板使用的是DM9000的网卡)
 	cs8900_get_enetaddr (gd->bd->bi_enetaddr);
 #endif
 
-#if defined(CONFIG_DRIVER_SMC91111) || defined (CONFIG_DRIVER_LAN91C96)
+#if defined(CONFIG_DRIVER_SMC91111) || defined (CONFIG_DRIVER_LAN91C96)	//未定义
 	if (getenv ("ethaddr")) {
 		smc_set_mac_addr(gd->bd->bi_enetaddr);
 	}
 #endif /* CONFIG_DRIVER_SMC91111 || CONFIG_DRIVER_LAN91C96 */
 
-	/* Initialize from environment */
+	/* Initialize from environment 获取内核加载地址*/
 	if ((s = getenv ("loadaddr")) != NULL) {
 		load_addr = simple_strtoul (s, NULL, 16);
 	}
@@ -865,20 +867,20 @@ extern void dm644x_eth_set_mac_addr (const u_int8_t *addr);
 #endif
 
 #ifdef BOARD_LATE_INIT
-	board_late_init ();
+	board_late_init ();	// 空函数（看名字应该是最后的初始化操作，说明该开发板所有的硬件已经初始化差不多了）
 #endif
 #if defined(CONFIG_CMD_NET)
 #if defined(CONFIG_NET_MULTI)
 	puts ("Net:   ");
 #endif
-	eth_initialize(gd->bd);
+	eth_initialize(gd->bd);	// 网卡相关的初始化
 #if defined(CONFIG_RESET_PHY_R)
 	debug ("Reset Ethernet PHY\n");
 	reset_phy();
 #endif
 #endif
 
-#if defined(CONFIG_CMD_IDE)
+#if defined(CONFIG_CMD_IDE) // 如果配置了ide硬盘，那么进行初始化
 	puts("IDE:   ");
 	ide_init();
 #endif
@@ -886,13 +888,14 @@ extern void dm644x_eth_set_mac_addr (const u_int8_t *addr);
 /****************lxg added**************/
 #ifdef CONFIG_MPAD
 	extern int x210_preboot_init(void);
-	x210_preboot_init();
+	x210_preboot_init();		    // 板子在启动之前的初始化
 #endif
 /****************end**********************/
-
-	/* check menukey to update from sd */
+// 原生uboot并没有以下检查升级步骤，该步骤主要用于量产时使用，
+// 目的是将sd卡中的新uboot通过一个sd卡中简单的uboot烧录进内部的iNand
+	/* check menukey to update from sd 检查升级*/
 	extern void update_all(void);
-	if(check_menu_update_from_sd()==0)//update mode
+	if(check_menu_update_from_sd()==0)//update mode	// 如果启动时按下了LEFT会自动检查升级uboot
 	{
 		puts ("[LEFT DOWN] update mode\n");
 		run_command("fdisk -c 0",0);
@@ -903,7 +906,7 @@ extern void dm644x_eth_set_mac_addr (const u_int8_t *addr);
 
 	/* main_loop() can return to retry autoboot, if so just run it again. */
 	for (;;) {
-		main_loop ();
+		main_loop ();	// 主循环(死循环)
 	}
 
 	/* NOTREACHED - no way out of command loop except booting */

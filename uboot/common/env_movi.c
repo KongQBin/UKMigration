@@ -99,7 +99,7 @@ void env_relocate_spec (void)
 	uint *magic = (uint*)(PHYS_SDRAM_1);
 
 	if ((0x24564236 != magic[0]) || (0x20764316 != magic[1]))
-		movi_read_env(virt_to_phys((ulong)env_ptr));
+		movi_read_env(virt_to_phys((ulong)env_ptr));	    // 从sd到ddr中进行重定位
 
 	if (crc32(0, env_ptr->data, ENV_SIZE) != env_ptr->crc)
 		return use_default();

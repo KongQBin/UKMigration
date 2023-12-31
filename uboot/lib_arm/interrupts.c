@@ -68,6 +68,7 @@ int disable_interrupts (void)
 	return (old & 0x80) == 0;
 }
 #else
+// 实际使用的是该函数
 void enable_interrupts (void)
 {
 	return;

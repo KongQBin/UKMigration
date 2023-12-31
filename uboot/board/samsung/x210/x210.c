@@ -159,7 +159,7 @@ int board_late_init (void)
 	return 0;
 }
 #else
-int board_late_init (void)
+int board_late_init (void)  // 当前板子使用的是这个函数
 {
 	return 0;
 }

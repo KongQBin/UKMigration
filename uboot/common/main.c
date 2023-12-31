@@ -338,7 +338,7 @@ void main_loop (void)
 #endif
 
 #ifdef CONFIG_AUTO_COMPLETE
-	install_auto_complete();
+	install_auto_complete(); // 自动补全
 #endif
 
 #ifdef CONFIG_FASTBOOT
@@ -441,6 +441,7 @@ void main_loop (void)
 	/* This point is never reached */
 	for (;;);
 #else
+	// 进入死循环
 	for (;;) {
 	#ifdef CONFIG_BOOT_RETRY_TIME
 		if (rc >= 0) {

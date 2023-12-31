@@ -1173,17 +1173,17 @@ void print_mmc_devices(char separator)
 
 	printf("\n");
 }
-
+// 硬件架构无关的初始化函数
 int mmc_initialize(bd_t *bis)
 {
 	struct mmc *mmc;
 	int err;
-
+	// 初始化mmc设备链表
 	INIT_LIST_HEAD(&mmc_devices);
 	cur_dev_num = 0;
 
-	if (board_mmc_init(bis) < 0)
-		cpu_mmc_init(bis);
+	if (board_mmc_init(bis) < 0)	// 如果板级mmc初始化失败了
+		cpu_mmc_init(bis);	// 就初始化soc内的mmc控制器
 
 #if defined(DEBUG_S3C_HSMMC)
 	print_mmc_devices(',');

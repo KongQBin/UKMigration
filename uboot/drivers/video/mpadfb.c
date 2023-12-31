@@ -711,7 +711,7 @@ static int s5pv210fb_window2_enable(struct s5pv210fb_lcd * lcd)
 ///* //lqm test
 void fb_init()
 {
-	get_HCLKD();
+	get_HCLKD();		// 获取时钟频率
 	info.bitmap.info.width = lcd.width;
 	info.bitmap.info.height = lcd.height;
 	info.bitmap.info.bpp = lcd.bpp;
@@ -750,7 +750,7 @@ void fb_init()
 //*/
 
 void lcd_port_init()
-{
+{	// lcd相关的gpio端口
 	writel(0x22222222, GPF0CON);
 	writel(0xffffffff, GPF0DRV);
 	writel(0x0, GPF0PUD);
@@ -794,7 +794,7 @@ void lcd_port_init()
 }
 
 void lcd_reg_init()
-{
+{	// lcd中相关寄存器的初始化
 	 //display path selection
 	 
 	writel((readl(S5PV210_DISPLAY_CONTROL) & ~(0x3<<0)) | (0x2<<0), S5PV210_DISPLAY_CONTROL);
@@ -873,7 +873,7 @@ void backlight_brigness_init(u8 brightness)
 
 
 
-
+// 以下大部分的初始化代码基本就是从Linux lcd驱动复制的
 void mpadfb_init()
 {
 //	unsigned short int *pFB;//这里一定要用short类型!
@@ -884,7 +884,7 @@ void mpadfb_init()
 #ifdef CONFIG_CHECK_X210CV3
 	init_logo();
 #endif
-	display_logo(&s5pv210_fb);
+	display_logo(&s5pv210_fb);	// 显示logo
 #if(DISP_MODE == TRULY043)
 	backlight_brigness_init(0);
 #else//AT070TN92
