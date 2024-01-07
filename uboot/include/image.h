@@ -171,9 +171,10 @@
 /*
  * Legacy format image header,
  * all data in network byte order (aka natural aka bigendian).
+ * uboot用来启动内核的一个标准的数据结构
  */
 typedef struct image_header {
-	uint32_t	ih_magic;	/* Image Header Magic Number	*/
+	uint32_t	ih_magic;	/* Image Header Magic Number	*/  // 这个就是校验信息
 	uint32_t	ih_hcrc;	/* Image Header CRC Checksum	*/
 	uint32_t	ih_time;	/* Image Creation Timestamp	*/
 	uint32_t	ih_size;	/* Image Data Size		*/

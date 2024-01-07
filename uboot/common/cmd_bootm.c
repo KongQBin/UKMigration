@@ -119,7 +119,7 @@ int do_bootelf (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]);
 static boot_os_fn do_bootm_artos;
 #endif
 
-ulong load_addr = CFG_LOAD_ADDR;	/* Default Load Address */
+ulong load_addr = CFG_LOAD_ADDR;	/* Default Load Address 0x30000000*/
 static bootm_headers_t images;		/* pointers to os/initrd/fdt images */
 
 void __board_lmb_reserve(struct lmb *lmb)
@@ -193,11 +193,15 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 
 	board_lmb_reserve(&lmb);
 
-#ifdef CONFIG_ZIMAGE_BOOT
-#define LINUX_ZIMAGE_MAGIC	0x016f2818
+#ifdef CONFIG_ZIMAGE_BOOT	// <- 很重要的宏
+// kernel经过编译首先会生成原始的vmlinux或者vmlinuz可执行程序，后由objcopy将其精简，去除无用数据然后供uboot使用
+// 精简后的Image文件又被压缩，并在文件头添加了自解压代码，生成了zImage，开头的z就是zip的意思，起初为了缩小体积以节省money
+// uboot为了启动内核，又在zImage的基础上，在文件头添加了64字节(mkimage.c)的信息生成了uImage
+// 所以uboot支持uImage，也可以支持zImage
+#define LINUX_ZIMAGE_MAGIC	0x016f2818	// 该数值为zImage的代号，匹配成功则认为这是zImage
 	/* find out kernel image address */
 	if (argc < 2) {
-		addr = load_addr;
+		addr = load_addr;	// 不指定地址就从默认的0x30000000去加载内核
 		debug ("*  kernel: default image load address = 0x%08lx\n",
 				load_addr);
 	} else {
@@ -205,8 +209,9 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 		debug ("*  kernel: cmdline image address = 0x%08lx\n", img_addr);
 	}
 
-
+	// 从Image地址的第37个字节开始，与LINUX_ZIMAGE_MAGIC校验，确定是否是zImage
 	if (*(ulong *)(addr + 9*4) == LINUX_ZIMAGE_MAGIC) {
+	    // 然后构建一个完整的image_header用于启动
 		printf("Boot with zImage\n");
 		addr = virt_to_phys(addr);
 		hdr = (image_header_t *)addr;
@@ -394,7 +399,7 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	lmb_reserve(&lmb, load_start, (load_end - load_start));
 
 #if defined(CONFIG_ZIMAGE_BOOT)
-after_header_check:
+after_header_check:	// 以上全是在校验头信息的代码逻辑
 	os = hdr->ih_os;
 #endif
 

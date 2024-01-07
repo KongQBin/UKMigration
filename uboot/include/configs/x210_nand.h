@@ -228,10 +228,10 @@
 /*#define CONFIG_BOOTARGS    	"root=ramfs devfs=mount console=ttySA0,9600" */
 #define CONFIG_BOOTARGS    	"root=/dev/mtdblock4 rootfstype=yaffs2 init=/init console=ttySAC2,115200"
 #define CONFIG_ETHADDR		00:40:5c:26:0a:5b
-#define CONFIG_NETMASK      	255.255.0.0
-#define CONFIG_IPADDR		192.168.1.88
-#define CONFIG_SERVERIP		192.168.1.102
-#define CONFIG_GATEWAYIP	192.168.0.1
+#define CONFIG_NETMASK      255.255.255.0
+#define CONFIG_IPADDR		192.168.31.220
+#define CONFIG_SERVERIP		192.168.31.69
+#define CONFIG_GATEWAYIP	192.168.31.1
 
 #define CONFIG_ZERO_BOOTDELAY_CHECK
 
