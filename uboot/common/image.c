@@ -295,6 +295,7 @@ static void image_print_type (image_header_t *hdr)
  * returns:
  *     no returned results
  */
+// 打印获取到的Image中的信息
 void image_print_contents (image_header_t *hdr)
 {
 	const char *p;
@@ -304,7 +305,6 @@ void image_print_contents (image_header_t *hdr)
 #else
 	p = "   ";
 #endif
-
 	printf ("%sImage Name:   %.*s\n", p, IH_NMLEN, image_get_name (hdr));
 #if defined(CONFIG_TIMESTAMP) || defined(CONFIG_CMD_DATE) || defined(USE_HOSTCC)
 	printf ("%sCreated:      ", p);
@@ -381,7 +381,7 @@ static image_header_t* image_get_ramdisk (ulong rd_addr, uint8_t arch,
 
 	show_boot_progress (10);
 	image_print_contents (rd_hdr);
-
+	// 验证校验和
 	if (verify) {
 		puts("   Verifying Checksum ... ");
 		if (!image_check_dcrc (rd_hdr)) {
@@ -393,7 +393,7 @@ static image_header_t* image_get_ramdisk (ulong rd_addr, uint8_t arch,
 	}
 
 	show_boot_progress (11);
-
+	// 检查系统、架构和类型
 	if (!image_check_os (rd_hdr, IH_OS_LINUX) ||
 	    !image_check_arch (rd_hdr, arch) ||
 	    !image_check_type (rd_hdr, IH_TYPE_RAMDISK)) {
@@ -631,7 +631,7 @@ int genimg_get_format (void *img_addr)
 #endif
 
 	hdr = (image_header_t *)img_addr;
-	if (image_check_magic(hdr))
+	if (image_check_magic(hdr))	/* 检查uImage的魔数是否正确 */
 		format = IMAGE_FORMAT_LEGACY;
 #if defined(CONFIG_FIT) || defined(CONFIG_OF_LIBFDT)
 	else {
@@ -680,9 +680,9 @@ ulong genimg_get_image (ulong img_addr)
 		read_dataflash (img_addr, h_size, (char *)ram_addr);
 
 		/* get data size */
-		switch (genimg_get_format ((void *)ram_addr)) {
+		switch (genimg_get_format ((void *)ram_addr)) {/* 根据不同的Imageh初始化不同的format */
 		case IMAGE_FORMAT_LEGACY:
-			d_size = image_get_data_size ((image_header_t *)ram_addr);
+			d_size = image_get_data_size ((image_header_t *)ram_addr);/* 获取Image的大小 */
 			debug ("   Legacy format image found at 0x%08lx, size 0x%08lx\n",
 					ram_addr, d_size);
 			break;

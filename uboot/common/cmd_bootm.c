@@ -230,6 +230,7 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 #endif
 
 	/* get kernel image header, start address and length */
+	/* uImage的校验主要在该函数中 */
 	os_hdr = boot_get_kernel (cmdtp, flag, argc, argv,
 			&images, &os_data, &os_len);
 	if (os_len == 0) {
@@ -239,7 +240,7 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 
 	/* get image parameters */
 	switch (genimg_get_format (os_hdr)) {
-	case IMAGE_FORMAT_LEGACY:
+	case IMAGE_FORMAT_LEGACY:	/*被遗弃的除zImage\uImage之外的另一种启动方式*/
 		type = image_get_type (os_hdr);
 		comp = image_get_comp (os_hdr);
 		os = image_get_os (os_hdr);
@@ -247,7 +248,7 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 		image_end = image_get_image_end (os_hdr);
 		load_start = image_get_load (os_hdr);
 		break;
-#if defined(CONFIG_FIT)
+#if defined(CONFIG_FIT)/* 设备树的启动方式 */
 	case IMAGE_FORMAT_FIT:
 		if (fit_image_get_type (images.fit_hdr_os,
 					images.fit_noffset_os, &type)) {
@@ -294,7 +295,7 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	 * overwrite all exception vector code, so we cannot easily
 	 * recover from any failures any more...
 	 */
-	iflag = disable_interrupts();
+	iflag = disable_interrupts();/* 关中断 */
 
 #if defined(CONFIG_CMD_USB)
 	/*
@@ -320,10 +321,10 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	flush_data_cache();
 	dcache_disable();
 #endif
-
+	// 根据不同的压缩形式，进行解压
 	switch (comp) {
-	case IH_COMP_NONE:
-		if (load_start == (ulong)os_hdr) {
+	case IH_COMP_NONE:  // 未压缩
+		if (load_start == (ulong)os_hdr) {/* 加载地址就等于头地址 */
 			printf ("   XIP %s ... ", type_name);
 		} else {
 			printf ("   Loading %s ... ", type_name);
@@ -377,7 +378,7 @@ int do_bootm (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[])
 	puts ("OK\n");
 	debug ("   kernel loaded at 0x%08lx, end = 0x%08lx\n", load_start, load_end);
 	show_boot_progress (7);
-
+	// 检查各地址都被初始化成功
 	if ((load_start < image_end) && (load_end > image_start)) {
 		debug ("image_start = 0x%lX, image_end = 0x%lx\n", image_start, image_end);
 		debug ("load_start = 0x%lx, load_end = 0x%lx\n", load_start, load_end);
@@ -405,7 +406,7 @@ after_header_check:	// 以上全是在校验头信息的代码逻辑
 
 	switch (os) {
 	default:			/* handled by (original) Linux case */
-	case IH_OS_LINUX:
+	case IH_OS_LINUX:		/* 对于Linux内核的启动，其它case条件是其它内核的启动流程*/
 #ifdef CONFIG_SILENT_CONSOLE
 	    fixup_silent_linux();
 #endif
@@ -584,7 +585,7 @@ static void *boot_get_kernel (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]
 		img_addr = load_addr;
 		debug ("*  kernel: default image load address = 0x%08lx\n",
 				load_addr);
-#if defined(CONFIG_FIT)
+#if defined(CONFIG_FIT)	/* 设备树 */
 	} else if (fit_parse_conf (argv[1], load_addr, &img_addr,
 							&fit_uname_config)) {
 		debug ("*  kernel: config '%s' from image at 0x%08lx\n",
@@ -594,7 +595,7 @@ static void *boot_get_kernel (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[]
 		debug ("*  kernel: subimage '%s' from image at 0x%08lx\n",
 				fit_uname_kernel, img_addr);
 #endif
-	} else {
+	} else {	/* uImage */
 		img_addr = simple_strtoul(argv[1], NULL, 16);
 		debug ("*  kernel: cmdline image address = 0x%08lx\n", img_addr);
 	}

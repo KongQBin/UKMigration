@@ -84,17 +84,17 @@ struct param_struct {
 #define ATAG_NONE	0x00000000
 
 struct tag_header {
-	u32 size;
-	u32 tag;
+	u32 size;   // 大小
+	u32 tag;    // 类型
 };
 
 /* The list must start with an ATAG_CORE node */
-#define ATAG_CORE	0x54410001
+#define ATAG_CORE	0x54410001	/* 这就表示了其中一个tag类型 */
 
 struct tag_core {
 	u32 flags;		/* bit 0 = read-only */
-	u32 pagesize;
-	u32 rootdev;
+	u32 pagesize;		/* 页大小 */
+	u32 rootdev;		/* 根设备 */
 };
 
 /* it is allowed to have multiple ATAG_MEM nodes */
@@ -210,14 +210,14 @@ struct tag_memclk {
 struct tag_mtdpart {
         u32 mtd_part_size[3];
 };
-
+// 用来向内核传参的数据结构
 struct tag {
-        struct tag_header hdr;
+        struct tag_header hdr;		/* 头信息，用来分辨信息类型 */
         union { 
-                struct tag_core         core;
-                struct tag_mem32        mem;
-                struct tag_videotext    videotext;
-                struct tag_ramdisk      ramdisk;
+                struct tag_core         core;	/* ？核心信息 */
+                struct tag_mem32        mem;	/* 内存配置信息 */
+                struct tag_videotext    videotext;  /* 视频相关的信息 */
+                struct tag_ramdisk      ramdisk;    /* ram设备信息 */
                 struct tag_initrd       initrd;
                 struct tag_serialnr     serialnr;
                 struct tag_revision     revision;

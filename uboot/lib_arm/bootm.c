@@ -65,7 +65,7 @@ void do_bootm_linux (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[],
 	ulong	ep = 0;
 	bd_t	*bd = gd->bd;
 	char	*s;
-	int	machid = bd->bi_arch_number;
+	int	machid = bd->bi_arch_number;	// 机器码，后续逻辑中，如果查询到环境变量中存在一份机器码，那么该值会被再次覆盖
 	void	(*theKernel)(int zero, int arch, uint params);
 	int	ret;
 
@@ -73,7 +73,7 @@ void do_bootm_linux (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[],
 	char *commandline = getenv ("bootargs");
 #endif
 
-	/* find kernel entry point */
+	/* find kernel entry point 查询镜像的起始点类似于start/main函数*/
 	if (images->legacy_hdr_valid) {
 		ep = image_get_ep (&images->legacy_hdr_os_copy);
 #if defined(CONFIG_FIT)
@@ -90,7 +90,7 @@ void do_bootm_linux (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[],
 		goto error;
 	}
 	theKernel = (void (*)(int, int, uint))ep;
-
+	/* 再次检查并初始化机器码 */
 	s = getenv ("machid");
 	if (s) {
 		machid = simple_strtoul (s, NULL, 16);
@@ -107,9 +107,9 @@ void do_bootm_linux (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[],
 	debug ("## Transferring control to Linux (at address %08lx) ...\n",
 	       (ulong) theKernel);
 
-#if defined (CONFIG_SETUP_MEMORY_TAGS) || \
-    defined (CONFIG_CMDLINE_TAG) || \
-    defined (CONFIG_INITRD_TAG) || \
+#if defined (CONFIG_SETUP_MEMORY_TAGS)/*内存配置信息*/ || \
+    defined (CONFIG_CMDLINE_TAG)/*启动命令行参数，uboot环境变量的bootargs*/ || \
+    defined (CONFIG_INITRD_TAG) /* init ram disk */|| \
     defined (CONFIG_SERIAL_TAG) || \
     defined (CONFIG_REVISION_TAG) || \
     defined (CONFIG_LCD) || \
@@ -144,6 +144,7 @@ void do_bootm_linux (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[],
 #endif
 
 	/* we assume that the kernel is in place */
+	/* uboot的最后一次打印，如果看到该信息，证明uboot执行已经到终点了 */
 	printf ("\nStarting kernel ...\n\n");
 
 #ifdef CONFIG_USB_DEVICE
@@ -154,7 +155,10 @@ void do_bootm_linux (cmd_tbl_t *cmdtp, int flag, int argc, char *argv[],
 #endif
 
 	cleanup_before_linux ();
-
+	/* 启动内核 执行失败的原因：传参（占80%）、内核在内存中的加载地址(zImage 0x30008000)(uImage ????)... */
+	// 参数1固定为0
+	// 参数2，机器码
+	// 参数3，tags
 	theKernel (0, machid, bd->bi_boot_params);
 	/* does not return */
 	return;
@@ -175,7 +179,7 @@ error:
     defined (CONFIG_MTDPARTITION)
 static void setup_start_tag (bd_t *bd)
 {
-	params = (struct tag *) bd->bi_boot_params;
+	params = (struct tag *) bd->bi_boot_params; /* 传参的起始地址 */
 
 	params->hdr.tag = ATAG_CORE;
 	params->hdr.size = tag_size (tag_core);
@@ -192,20 +196,20 @@ static void setup_start_tag (bd_t *bd)
 static void setup_memory_tags (bd_t *bd)
 {
 	int i;
-
+	// 初始化各个内存设备的信息
 	for (i = 0; i < CONFIG_NR_DRAM_BANKS; i++) {
 		params->hdr.tag = ATAG_MEM;
 		params->hdr.size = tag_size (tag_mem32);
-
+		// 起始地址
 		params->u.mem.start = bd->bi_dram[i].start;
 		params->u.mem.size = bd->bi_dram[i].size;
 
-		params = tag_next (params);
+		params = tag_next (params); // 移动到下一个
 	}
 }
 #endif /* CONFIG_SETUP_MEMORY_TAGS */
 
-
+// 获取bootargs
 static void setup_commandline_tag (bd_t *bd, char *commandline)
 {
 	char *p;
@@ -333,7 +337,7 @@ void setup_mtdpartition_tag()
 
 static void setup_end_tag (bd_t *bd)
 {
-	params->hdr.tag = ATAG_NONE;
+	params->hdr.tag = ATAG_NONE;	// 结束tag
 	params->hdr.size = 0;
 }
 
