@@ -1,4 +1,5 @@
 #!/bin/sh
 make distclean
-make x210_sd_config
+#make x210_sd_config
+make x210_nand_config
 make -j4
