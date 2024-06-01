@@ -151,6 +151,7 @@ COBJS-y += cmd_fastboot.o
 COBJS-y += cmd_mmc_fdisk.o
 COBJS-y += ace_sha1.o
 COBJS-y += secure_boot.o
+COBJS-y += cmd_name.o
 
 COBJS	:= $(COBJS-y)
 

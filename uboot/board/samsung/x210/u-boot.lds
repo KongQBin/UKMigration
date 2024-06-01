@@ -52,7 +52,7 @@ SECTIONS
 
 	. = ALIGN(4);
 	.got : { *(.got) }
-
+    /*__u_boot_cmd_start -> 作为结构体数组使用的自定义段*/
 	__u_boot_cmd_start = .;
 	.u_boot_cmd : { *(.u_boot_cmd) }
 	__u_boot_cmd_end = .;

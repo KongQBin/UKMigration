@@ -86,9 +86,11 @@ typedef	void	command_t (cmd_tbl_t *, int, int, char *[]);
 #define CMD_FLAG_REPEAT		0x0001	/* repeat last command		*/
 #define CMD_FLAG_BOOTD		0x0002	/* command is from bootd	*/
 
-#define Struct_Section  __attribute__ ((unused,section (".u_boot_cmd")))
+/*目地是为所定义的结构体赋予段属性*/
+#define Struct_Section  __attribute__ ((unused,section (".u_boot_cmd"/*所属的自定义段名称*/)))
 
-#ifdef  CFG_LONGHELP
+/*结构体定义并快速初始化的宏*/
+#ifdef  CFG_LONGHELP被
 
 #define U_BOOT_CMD(name,maxargs,rep,cmd,usage,help) \
 cmd_tbl_t __u_boot_cmd_##name Struct_Section = {#name, maxargs, rep, cmd, usage, help}

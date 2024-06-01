@@ -340,11 +340,12 @@ cmd_tbl_t __u_boot_cmd_question_mark Struct_Section = {
 
 /***************************************************************************
  * find command table entry for a command
+ * 找到返回地址，找不到返回NULL
  */
 cmd_tbl_t *find_cmd (const char *cmd)
 {
 	cmd_tbl_t *cmdtp;
-	cmd_tbl_t *cmdtp_temp = &__u_boot_cmd_start;	/*Init value */
+	cmd_tbl_t *cmdtp_temp = &__u_boot_cmd_start;	/*Init value 段的起始地址*/
 	const char *p;
 	int len;
 	int n_found = 0;
@@ -352,6 +353,9 @@ cmd_tbl_t *find_cmd (const char *cmd)
 	/*
 	 * Some commands allow length modifiers (like "cp.b");
 	 * compare command name only until first dot.
+	 *
+	 * 遍历整个__u_boot_cmd_start自定义段，并特殊处理名称中包含.的变量
+	 *
 	 */
 	len = ((p = strchr(cmd, '.')) == NULL) ? strlen (cmd) : (p - cmd);
 
