@@ -35,7 +35,8 @@
  * combination of deleting the old value and adding the new one.
  *
  * The environment is preceeded by a 32 bit CRC over the data part.
- *
+ * 操作环境变量的相关函数，env在内存中的排列是a="1"\0b="2"\0...,故在修改时操作比较繁琐
+ * 另一个问题时一些全局变量是通过开机时读取环境变量进行初始化的，故在更新时也要同时更新全局变量
  **************************************************************************
  */
 
@@ -243,7 +244,7 @@ int _do_setenv (int flag, int argc, char *argv[])
 			printf ("## Switch baudrate to %d bps and press ENTER ...\n",
 				baudrate);
 			udelay(50000);
-			gd->baudrate = baudrate;
+			gd->baudrate = baudrate; // 更新全局波特率变量
 #if defined(CONFIG_PPC) || defined(CONFIG_MCF52x2)
 			gd->bd->bi_baudrate = baudrate;
 #endif
@@ -356,7 +357,7 @@ int _do_setenv (int flag, int argc, char *argv[])
 			addr  |= (val & 0xFF);
 			if (s) s = (*e) ? e+1 : e;
 		}
-		bd->bi_ip_addr = htonl(addr);
+		bd->bi_ip_addr = htonl(addr); // 更新版信息(bdinfo)中的ip地址
 		return 0;
 	}
 	if (strcmp(argv[1],"loadaddr") == 0) {
@@ -499,7 +500,7 @@ char *getenv (char *name)
 {
 	int i, nxt;
 
-	WATCHDOG_RESET();
+	WATCHDOG_RESET();   //重置看门狗
 
 	for (i=0; env_get_char(i) != '\0'; i=nxt+1) {
 		int val;
@@ -516,7 +517,7 @@ char *getenv (char *name)
 
 	return (NULL);
 }
-
+// 可重入版本
 int getenv_r (char *name, char *buf, unsigned len)
 {
 	int i, nxt;

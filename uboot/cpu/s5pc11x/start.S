@@ -224,7 +224,7 @@ lp2:
         /* Read booting information */
         ldr	r0, =PRO_ID_BASE
         ldr	r1, [r0,#OMR_OFFSET]
-        bic	r2, r1, #0xffffffc1
+        bic	r2, r1, #0xffffffc1 /*对r1的除低2-6位的其他位清零并赋值给r2*/
 
 #ifdef CONFIG_VOGUES
 	/* PS_HOLD(GPH0_0) set to output high */
@@ -255,7 +255,7 @@ lp2:
 	cmp	r2, #0x8		@ OneNAND Mux
 	moveq	r3, #BOOT_ONENAND
 
-	/* SD/MMC BOOT */
+	/* SD/MMC BOOT BOOT_MMCSD=3*/
 	cmp     r2, #0xc
 	moveq   r3, #BOOT_MMCSD	
 
@@ -275,7 +275,7 @@ lp2:
 	moveq   r3, #BOOT_SEC_DEV
 	
 	ldr	r0, =INF_REG_BASE
-	str	r3, [r0, #INF_REG3_OFFSET]     
+	str	r3, [r0, #INF_REG3_OFFSET]    /*向基于r0(寄存器基地址)偏移INF_REG3_OFFSET的地方写入r3*/
 
 	/*
 	 * Go setup Memory and board specific bits prior to relocation.

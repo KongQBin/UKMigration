@@ -123,8 +123,12 @@
 /*
  * 该板子的唯一编号，需要开发板、uboot、kernel相对应
  * 理论上不能自己随便设置，由uboot官方指定，自己配置有概率与别人冲突
+ * uboot bdinfo 命令可以查看 arch_number=0x998
+ * 当uboot与内核中的arch_number不一致时
+ * 可以通过设置machid环境变量来临时替换arch_number
+ * 当machid环境变量被设置为空时，将不再校验uboot与kernel中的arch_number匹配
 */
-#define MACH_TYPE		2456
+#define MACH_TYPE		2456	/*=0x998*/
 
 #define UBOOT_MAGIC		(0x43090000 | MACH_TYPE)
 

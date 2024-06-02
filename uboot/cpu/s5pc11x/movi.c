@@ -105,8 +105,9 @@ void print_movi_bl2_info(void)
 
 void movi_write_env(ulong addr)
 {
-	movi_write(raw_area_control.image[2].start_blk,
-		   raw_area_control.image[2].used_blk, addr);
+    // 调用驱动写入环境变量
+	movi_write(raw_area_control.image[2].start_blk/*起始地址*/,
+		   raw_area_control.image[2].used_blk/*使用的地址*/, addr/*地址*/);
 }
 
 void movi_read_env(ulong addr)

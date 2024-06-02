@@ -30,7 +30,7 @@
  */
 
 /* #define DEBUG */
-
+/*当前板子使用的是envauto save*/
 #include <common.h>
 
 #if defined(CFG_ENV_IS_IN_AUTO) /* Environment is in Non-Volatile Device */
@@ -278,7 +278,8 @@ int saveenv_nand_adv(void)
 int saveenv_movinand(void)
 {
 #if defined(CONFIG_CMD_MOVINAND)
-        movi_write_env(virt_to_phys((ulong)env_ptr));
+	// virt_to_phys 在当前移植代码中是个宏定义
+        movi_write_env(virt_to_phys((ulong)env_ptr)); //向sd卡中写入环境变量 -> cpu/s5pv11x/movi.c
         puts("done\n");
 
         return 1;
@@ -422,10 +423,11 @@ int saveenv_nor(void)
 }
 int saveenv(void)
 {
+    //根据寄存器自动匹配调用
 #if defined(CONFIG_S5PC100) || defined(CONFIG_S5PC110) || defined(CONFIG_S5P6442)
 	if (INF_REG3_REG == 2)
 		saveenv_nand();
-	else if (INF_REG3_REG == 3)
+	else if (INF_REG3_REG == 3) //当前寄存器中的值=3
 		saveenv_movinand();
 	else if (INF_REG3_REG == 1)
 		saveenv_onenand();

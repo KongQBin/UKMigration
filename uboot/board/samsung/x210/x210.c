@@ -184,9 +184,10 @@ int checkboard(void)
 
 #ifdef CONFIG_ENABLE_MMU
 
-#ifdef CONFIG_MCP_SINGLE
+#ifdef CONFIG_MCP_SINGLE    /*被定义*/
 ulong virt_to_phy_smdkc110(ulong addr)
 {
+    // 当地址在特定地址区间，那么就将虚拟地址转换为物理地址
 	if ((0xc0000000 <= addr) && (addr < 0xd0000000))
 		return (addr - 0xc0000000 + MEMORY_BASE_ADDRESS); //yan
 	else

@@ -189,7 +189,7 @@ mmc_bwrite(int dev_num, ulong start, lbaint_t blkcnt, const void *src)
 
 ulong movi_write(ulong start, lbaint_t blkcnt, void *src)
 {
-	return mmc_bwrite(0, start, blkcnt, src);
+	return mmc_bwrite(0, start, blkcnt, src); //*
 }
 
 ulong movi_read(ulong start, lbaint_t blkcnt, void *dst)
