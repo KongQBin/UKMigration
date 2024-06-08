@@ -4,27 +4,30 @@
 #include <mmc.h>
 #include <s3c_hsmmc.h>
 
+// 初始化mmc控制器时钟部分
 void setup_hsmmc_clock(void)
 {
 	u32 tmp;
 	u32 clock;
 	u32 i;
 
+	// MMC0的初始化
 	/* MMC0 clock src = SCLKMPLL */
 	tmp = CLK_SRC4_REG & ~(0x0000000f);
 	CLK_SRC4_REG = tmp | 0x00000006;
 
+	// 分频
 	/* MMC0 clock div */
 	tmp = CLK_DIV4_REG & ~(0x0000000f);
 	clock = get_MPLL_CLK()/1000000;
 	for(i=0; i<0xf; i++)
 	{
-		if((clock / (i+1)) <= 50) {
+		if((clock / (i+1)) <= 50/*频率设置在50M之内*/) {
 			CLK_DIV4_REG = tmp | i<<0;
 			break;
 		}
 	}
-
+// MMC 1 通道
 #ifdef USE_MMC1
 	/* MMC1 clock src = SCLKMPLL */
 	tmp = CLK_SRC4_REG & ~(0x000000f0);

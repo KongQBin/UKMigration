@@ -24,7 +24,11 @@
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston,
  * MA 02111-1307 USA
  */
-
+/*
+ * s3c处理与sd卡硬件相关的操作，
+ * 如果SD卡不变，SoC变更，那么只需要修改这个文件即可
+ * 如果SD卡升级，SoC没变，那么只需要修改mmc.c文件即可
+*/
 #include <config.h>
 #include <common.h>
 #include <command.h>
@@ -394,15 +398,17 @@ static int s3c_hsmmc_init(struct mmc *mmc)
 
 static int s3c_hsmmc_initialize(int channel)
 {
+    // mmc 包含了对sd卡的各种属性及操作
+    // mmc 就相当于一个对象，然后初始化这个对象
 	struct mmc *mmc;
 
 	mmc = &mmc_channel[channel];
 
 	sprintf(mmc->name, "S3C_HSMMC%d", channel);
 	mmc->priv = &mmc_host[channel];
-	mmc->send_cmd = s3c_hsmmc_send_command;
-	mmc->set_ios = s3c_hsmmc_set_ios;
-	mmc->init = s3c_hsmmc_init;
+	mmc->send_cmd = s3c_hsmmc_send_command;	// 实际发送命令的函数
+	mmc->set_ios = s3c_hsmmc_set_ios;	// 实际的读写函数
+	mmc->init = s3c_hsmmc_init;		// 实际的初始化函数
 
 	mmc->voltages = MMC_VDD_32_33 | MMC_VDD_33_34;
 	mmc->host_caps = MMC_MODE_4BIT | MMC_MODE_HS_52MHz | MMC_MODE_HS;
@@ -433,7 +439,7 @@ static int s3c_hsmmc_initialize(int channel)
 	default:
 		printk("mmc err: not supported channel %d\n", channel);
 	}
-	
+	// mmc_register -> 向驱动列表注册驱动设备
 	return mmc_register(mmc);
 }
 // 这就是驱动代码了
@@ -456,7 +462,7 @@ int smdk_s3c_hsmmc_init(void)
 
 	int err;
 
-#ifdef USE_MMC0
+#ifdef USE_MMC0/*定义了*/
 	err = s3c_hsmmc_initialize(0);
 	if(err)
 		return err;

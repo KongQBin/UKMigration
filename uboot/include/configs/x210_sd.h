@@ -240,9 +240,10 @@
 //#define CONFIG_BOOTARGS    	"console=ttySAC0,115200 root=/dev/mmcblk0p2 rw init=/linuxrc rootfstype=ext3"
 #define CONFIG_ETHADDR		00:40:5c:26:0a:5b
 #define CONFIG_NETMASK      255.255.255.0
-#define CONFIG_IPADDR		192.168.31.220
-#define CONFIG_SERVERIP		192.168.31.69
-#define CONFIG_GATEWAYIP	192.168.31.1
+#define CONFIG_IPADDR       10.0.0.239
+#define CONFIG_SERVERIP     10.0.0.249
+#define CONFIG_GATEWAYIP    10.0.0.1
+
 
 #define CONFIG_ZERO_BOOTDELAY_CHECK
 

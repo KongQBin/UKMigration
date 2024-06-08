@@ -45,6 +45,7 @@ struct mmc *mmc_default = NULL;
 
 int mmc_send_cmd(struct mmc *mmc, struct mmc_cmd *cmd, struct mmc_data *data)
 {
+	// 后期使用sd卡读写数据时，也是通过调用该函数(send_cmd)发送读写命令来进行的
 	return mmc->send_cmd(mmc, cmd, data);
 }
 
@@ -1097,7 +1098,7 @@ int mmc_register(struct mmc *mmc)
 
 	INIT_LIST_HEAD(&mmc->link);
 
-	list_add_tail(&mmc->link, &mmc_devices);
+	list_add_tail(&mmc->link, &mmc_devices);    // 将设备插入到内核链表
 
 	return 0;
 }
@@ -1108,7 +1109,7 @@ block_dev_desc_t *mmc_get_dev(int dev)
 
 	return mmc ? &mmc->block_dev : NULL;
 }
-
+// 通过向mmc发送命令的形式，来初始化sd卡内部的控制器
 int mmc_init(struct mmc *host)
 {
 	int err;
@@ -1189,13 +1190,14 @@ int mmc_initialize(bd_t *bis)
 	print_mmc_devices(',');
 #endif
 
-#ifdef CONFIG_CHECK_X210CV3
+#ifdef CONFIG_CHECK_X210CV3/*未定义*/
 	mmc = find_mmc_device(1);//lqm
 #else
-	mmc = find_mmc_device(0);
+	mmc = find_mmc_device(0);	// 通过mmc编号，查找对应的设备
 #endif
+	 // 如果找到了，那么进行初始化，当初始化失败会再尝试一次
 	if (mmc) {
-		err = mmc_init(mmc);
+		err = mmc_init(mmc);	// 初始化sd卡内部的控制器
 		if (err)
 			err = mmc_init(mmc);
 		if (err) {
@@ -1203,6 +1205,7 @@ int mmc_initialize(bd_t *bis)
 			return err;
 		}
 	}
+	// 打印sd卡的大小
 	printf("%ldMB\n", (mmc->capacity/(1024*1024/(1<<9))));
 	return 0;
 }

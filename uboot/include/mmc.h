@@ -286,7 +286,7 @@ struct mmc_data {
 	uint blocks;
 	uint blocksize;
 };
-
+// 用来操作mmc设备的对象，包含对应mmc设备的属性以及方法
 struct mmc {
 	struct list_head link;
 	char name[32];
