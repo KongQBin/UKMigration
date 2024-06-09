@@ -763,6 +763,7 @@ static int mmc_decode_csd(struct mmc *host)
 
 /*
  * Read and decode extended CSD.
+ * 读取扩展CSD寄存器
  */
 static int mmc_read_ext_csd(struct mmc *host)
 {
@@ -770,6 +771,7 @@ static int mmc_read_ext_csd(struct mmc *host)
 	u8 *ext_csd;
 	unsigned int ext_csd_struct;
 
+	// 判断控制器与sd卡版本是否匹配
 	if (host->version < (MMC_VERSION_4 | MMC_VERSION_MMC))
 		return 0;
 
@@ -814,7 +816,7 @@ static int mmc_read_ext_csd(struct mmc *host)
 	}
 
 	ext_csd_struct = ext_csd[EXT_CSD_REV];
-	if (ext_csd_struct > 5) {
+	if (ext_csd_struct > 7) {   /*将版本判断+1，如果版本5与版本7差异不大的话，其它代码是可以不用修改的*/
 		printf("unrecognised EXT_CSD structure "
 			"version %d\n", ext_csd_struct);
 		err = -1;
@@ -1162,7 +1164,10 @@ int mmc_initialize(bd_t *bis)
 #if defined(DEBUG_S3C_HSMMC)
 	print_mmc_devices(',');
 #endif
-
+	/* 0 使用 iNand（当前板子为4G）
+	 * 1 使用 sd卡（当前SD卡为8G）
+	 * 当使用sd卡时不会出现版本校验不过的问题
+	 */
 	mmc = find_mmc_device(0);
 	if (mmc) {
 		err = mmc_init(mmc);

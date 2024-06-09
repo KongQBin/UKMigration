@@ -355,6 +355,7 @@ retryloop:
 /*
  * uart_asm_init: Initialize UART in asm mode, 115200bps fixed.
  * void uart_asm_init(void)
+ * 串口的初始化
  */
 uart_asm_init:
 
@@ -556,8 +557,10 @@ wait_orwb:
 .section .mmudata, "a"
 	.align 14
 	// the following alignment creates the mmu table at address 0x4000.
+	// 虚拟地址映射相关代码
 	.globl mmu_table
 mmu_table:
+	// 0-256M原样映射
 	.set __base,0
 	// Access for iRAM
 	.rept 0x100
@@ -565,11 +568,13 @@ mmu_table:
 	.set __base,__base+1
 	.endr
 
+	// 512-256M映射至0地址
 	// Not Allowed
 	.rept 0x200 - 0x100
 	.word 0x00000000
 	.endr
 
+	// 1536-512区间原样映射
 	.set __base,0x200
 	// should be accessed
 	.rept 0x600 - 0x200
@@ -598,9 +603,12 @@ mmu_table:
 	.set __base,__base+1
 	.endr
 
-	.set __base,0x200
+	// 原0xc00-0xd00映射到0x20000000
+	// 修改为映射至0x30000000
+//	.set __base,0x200
+	.set __base,0x300
 	// 256MB for SDRAM with cacheable
-	.rept 0xD00 - 0xC00
+	.rept 0xD00 - 0xC00		// 0xd00-0xc00=256，故此处不用再动
 	FL_SECTION_ENTRY __base,3,0,1,1
 	.set __base,__base+1
 	.endr

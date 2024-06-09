@@ -1366,6 +1366,7 @@ typedef enum {
 #define ELFIN_UART2_OFFSET		0x0800
 #define ELFIN_UART3_OFFSET		0x0c00
 
+// 判断使用哪个串口
 #if defined(CONFIG_SERIAL1)
 #define ELFIN_UART_CONSOLE_BASE (ELFIN_UART_BASE + ELFIN_UART0_OFFSET)
 #elif defined(CONFIG_SERIAL2)

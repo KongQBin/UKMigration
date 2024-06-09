@@ -69,7 +69,7 @@
 /* skip to load BL2 */
 //#define FAST_BOOT		1
 
-#define MEMORY_BASE_ADDRESS	0x20000000
+#define MEMORY_BASE_ADDRESS	0x30000000  //使两块256M内存地址连续
 
 /* input clock of PLL */
 #define CONFIG_SYS_CLK_FREQ	24000000	/* the SMDK6400 has 24MHz input clock */
@@ -142,7 +142,8 @@
  * select serial console configuration
  */
 
-#define CONFIG_SERIAL3          1	/* we use UART1 on SMDKC110 */
+#define CONFIG_SERIAL3          1	/* we use UART2 on SMDKC110 */
+//#define CONFIG_SERIAL1          1	/* we use UART0 on SMDKC110 */
 
 #define CFG_HUSH_PARSER			/* use "hush" command parser	*/
 #ifdef CFG_HUSH_PARSER
@@ -210,11 +211,17 @@
 #define CONFIG_BOOTP_BOOTPATH
 
 /*#define CONFIG_BOOTARGS    	"root=ramfs devfs=mount console=ttySA0,9600" */
+/*
+ * 由于iNand中有我之前save的环境变量，而uboot会优先加载iNand中的环境变量
+ * 可以通过启动uboot时重新设置并保存来更新iNand中的环境变量
+ * 也可以通过命令`mmc write 0 30000000 11# 32`来进行擦除
+ * 命令:向0x30000000起始地址的第0x11扇区向后写32个扇区的0
+*/
 #define CONFIG_ETHADDR		00:40:5c:26:0a:5b
 #define CONFIG_NETMASK          255.255.255.0
-#define CONFIG_IPADDR		192.168.0.20
-#define CONFIG_SERVERIP		192.168.0.10
-#define CONFIG_GATEWAYIP	192.168.0.1
+#define CONFIG_IPADDR		10.0.0.152
+#define CONFIG_SERVERIP		10.0.0.249
+#define CONFIG_GATEWAYIP	10.0.0.1
 
 #define CONFIG_ZERO_BOOTDELAY_CHECK
 
@@ -244,7 +251,7 @@
  */
 #define CFG_LONGHELP				/* undef to save memory		*/
 
-#define CFG_PROMPT              "SMDKV210 # "   /* Monitor Command Prompt       */
+#define CFG_PROMPT              "S5PV210 # "   /* Monitor Command Prompt       */
 
 #define CFG_CBSIZE		256		/* Console I/O Buffer Size	*/
 #define CFG_PBSIZE		384		/* Print Buffer Size */
@@ -281,7 +288,7 @@
 //#define CONFIG_CLK_533_133_100_100
 //#define CONFIG_CLK_800_200_166_133
 //#define CONFIG_CLK_800_100_166_133
-#define CONFIG_CLK_1000_200_166_133
+#define CONFIG_CLK_1000_200_166_133	    // 此处的时钟频率是对的，故无需修改
 //#define CONFIG_CLK_400_200_166_133
 //#define CONFIG_CLK_400_100_166_133
 
@@ -404,8 +411,10 @@
 	defined(CONFIG_CLK_400_100_166_133)
 
 #if defined(CONFIG_MCP_SINGLE)
-
-#define DMC0_MEMCONFIG_0	0x20E01323	// MemConfig0	256MB config, 8 banks,Mapping Method[12:15]0:linear, 1:linterleaved, 2:Mixed
+// 使DMC0_MEMCONFIG_0与基地址匹配 2->3
+// E->F	是因为掩码是0x00000000->0x0fffffff(256M),0x0fffffff的取反 = 0xF0000000,故修改为F
+//#define DMC0_MEMCONFIG_0	0x20E01323	// MemConfig0	256MB config, 8 banks,Mapping Method[12:15]0:linear, 1:linterleaved, 2:Mixed
+#define DMC0_MEMCONFIG_0	0x30F01323	// MemConfig0	256MB config, 8 banks,Mapping Method[12:15]0:linear, 1:linterleaved, 2:Mixed
 #define DMC0_MEMCONFIG_1	0x40F01323	// MemConfig1
 #define DMC0_TIMINGA_REF	0x00000618	// TimingAref	7.8us*133MHz=1038(0x40E), 100MHz=780(0x30C), 20MHz=156(0x9C), 10MHz=78(0x4E)
 #define DMC0_TIMING_ROW		0x28233287	// TimingRow	for @200MHz
@@ -466,7 +475,7 @@
 #endif
 
 #define CONFIG_NR_DRAM_BANKS    2          /* we have 2 bank of DRAM */
-#define SDRAM_BANK_SIZE         0x20000000    /* 512 MB */
+#define SDRAM_BANK_SIZE         0x10000000    /* 256 MB */
 #define PHYS_SDRAM_1            MEMORY_BASE_ADDRESS /* SDRAM Bank #1 */
 #define PHYS_SDRAM_1_SIZE       SDRAM_BANK_SIZE
 #define PHYS_SDRAM_2            (MEMORY_BASE_ADDRESS + SDRAM_BANK_SIZE) /* SDRAM Bank #2 */
@@ -508,16 +517,16 @@
  * SMDKC110 board specific data
  */
 
-#define CONFIG_IDENT_STRING	" for SMDKV210"
+#define CONFIG_IDENT_STRING	" for S5PV210"
 
 /* total memory required by uboot */
 #define CFG_UBOOT_SIZE		(2*1024*1024)
 
  /* base address for uboot */
 #ifdef CONFIG_ENABLE_MMU
-#define CFG_UBOOT_BASE		0xc3e00000
+#define CFG_UBOOT_BASE		0xc3e00000  // 0xc指的是映射的虚拟地址
 #else
-#define CFG_UBOOT_BASE		0x23e00000
+#define CFG_UBOOT_BASE		(MEMORY_BASE_ADDRESS+0x3e00000)  // 防止某天关闭MMU时出问题，故也进行修改
 #endif
 
 #define CFG_PHY_UBOOT_BASE	MEMORY_BASE_ADDRESS + 0x3e00000
