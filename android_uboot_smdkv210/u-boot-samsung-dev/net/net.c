@@ -251,6 +251,7 @@ void ArpRequest (void)
 	}
 
 	NetWriteIP ((uchar *) & arp->ar_data[16], NetArpWaitReplyIP);
+	// 调用驱动的send函数（当前开发板在dm9000x.c中定义）
 	(void) eth_send (NetTxPacket, (pkt - NetTxPacket) + ARP_HDR_SIZE);
 }
 
@@ -505,7 +506,7 @@ restart:
 		 *	Check the ethernet for a new packet.  The ethernet
 		 *	receive routine will process it.
 		 */
-		eth_rx();
+		eth_rx();   // 接收返回数据
 
 		/*
 		 *	Abort if ctrl-c was pressed.
@@ -761,7 +762,7 @@ int PingSend(void)
 	/* and do the ARP request */
 	NetArpWaitTry = 1;
 	NetArpWaitTimerStart = get_timer(0);
-	ArpRequest();
+	ArpRequest();	    // ARP请求
 	return 1;	/* waiting */
 }
 
@@ -790,8 +791,8 @@ static void PingStart(void)
 #if defined(CONFIG_NET_MULTI)
 	printf ("Using %s device\n", eth_get_name());
 #endif	/* CONFIG_NET_MULTI */
-	NetSetTimeout (10UL * CFG_HZ, PingTimeout);
-	NetSetHandler (PingHandler);
+	NetSetTimeout (10UL * CFG_HZ, PingTimeout); // 设置等待超时
+	NetSetHandler (PingHandler);		    // 设置一个回调
 
 	PingSend();
 }

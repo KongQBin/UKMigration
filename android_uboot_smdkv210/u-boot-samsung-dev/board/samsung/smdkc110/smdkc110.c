@@ -61,24 +61,35 @@ static inline void delay(unsigned long loops)
 /*
  * Miscellaneous platform dependent initialisations
  */
-
+/*
+ * 预初始化DM9000设备
+*/
 static void dm9000_pre_init(void)
 {
 	unsigned int tmp;
 
 #if defined(DM9000_16BIT_DATA)
-	SROM_BW_REG &= ~(0xf << 20);
-	SROM_BW_REG |= (0<<23) | (0<<22) | (0<<21) | (1<<20);
+	// 三星官方将网卡接在了bank5上
+//	SROM_BW_REG &= ~(0xf << 20);
+//	SROM_BW_REG |= (0<<23) | (0<<22) | (0<<21) | (1<<20);
+	// 我们需要将网卡接在bank1上，且当前DM9000与SoC的接线原理图中，
+	// SD0->DATA0，并没有错位（SD0->DATA1），故将第五位（AddrMode1）修改为1
+	SROM_BW_REG &= ~(0xf << 4);
+	SROM_BW_REG |= (0<<7) | (0<<6) | (1<<5) | (1<<4);
 
 #else	
 	SROM_BW_REG &= ~(0xf << 20);
 	SROM_BW_REG |= (0<<19) | (0<<18) | (0<<16);
 #endif
-	SROM_BC5_REG = ((0<<28)|(1<<24)|(5<<16)|(1<<12)|(4<<8)|(6<<4)|(0<<0));
+//	SROM_BC5_REG = ((0<<28)|(1<<24)|(5<<16)|(1<<12)|(4<<8)|(6<<4)|(0<<0));
+	SROM_BC1_REG = ((0<<28)|(1<<24)|(5<<16)|(1<<12)|(4<<8)|(6<<4)|(0<<0));
 
 	tmp = MP01CON_REG;
-	tmp &=~(0xf<<20);
-	tmp |=(2<<20);
+//	tmp &=~(0xf<<20);
+//	tmp |=(2<<20);
+	// 0010 = SROM_CSn[1]
+	tmp &=~(0xf<<4);
+	tmp |=(2<<4);
 	MP01CON_REG = tmp;
 }
 

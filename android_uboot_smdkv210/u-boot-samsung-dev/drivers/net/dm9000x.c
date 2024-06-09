@@ -67,6 +67,7 @@ TODO: Homerun NIC and longrun NIC are not functional, only internal at the
 #include "dm9000x.h"
 
 /* Board/System/Debug information/definition ---------------- */
+/* Linux kernel 中拿过来的代码，故目前无需修改*/
 
 #define DM9801_NOISE_FLOOR	0x08
 #define DM9802_NOISE_FLOOR	0x05
