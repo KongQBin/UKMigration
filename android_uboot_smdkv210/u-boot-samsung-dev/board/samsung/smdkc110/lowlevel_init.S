@@ -114,8 +114,13 @@ lowlevel_init:
 	cmp     r1, r2                  /* compare r0, r1                  */
 	beq     1f			/* r0 == r1 then skip sdram init   */
 
-	/* init PMIC chip */
-	bl PMIC_InitIp
+	/* init PMIC chip 初始化电源管理ic，负责所有板级供电的模块
+         * 其可与Soc直接通讯，使板子进入低功耗模式等
+         * 因为比较贵，所以在当前开发板并不存在
+         * 导致函数内部向PMIC发送I2C接口命令时会进入死循环
+         * 故注释
+         */
+	// bl PMIC_InitIp
 
 	/* init system clock */
 	bl system_clock_init
