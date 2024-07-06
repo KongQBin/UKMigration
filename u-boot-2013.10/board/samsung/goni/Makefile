@@ -13,12 +13,14 @@ include $(TOPDIR)/config.mk
 LIB	= $(obj)lib$(BOARD).o
 
 COBJS-y	:= goni.o onenand.o
-SOBJS	:= lowlevel_init.o
+#SOBJS	:= lowlevel_init.o
+LOW	:= lowlevel_init.o
 
 SRCS    := $(SOBJS:.o=.S) $(COBJS-y:.o=.c)
 OBJS	:= $(addprefix $(obj),$(COBJS-y))
 SOBJS	:= $(addprefix $(obj),$(SOBJS))
 
+all:	$(obj).depend $(LOW) $(LIB)
 $(LIB):	$(obj).depend $(SOBJS) $(OBJS)
 	$(call cmd_link_o_target, $(SOBJS) $(OBJS))
 
