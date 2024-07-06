@@ -19,6 +19,11 @@
 #include <asm/system.h>
 #include <linux/linkage.h>
 
+	.word 0x2000
+	.word 0x0
+	.word 0x0
+	.word 0x0
+
 .globl _start
 _start: b	reset
 	ldr	pc, _undefined_instruction
