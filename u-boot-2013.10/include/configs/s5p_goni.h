@@ -31,6 +31,7 @@
 
 /* Text Base */
 #define CONFIG_SYS_TEXT_BASE		0x34800000
+#define CFG_PHY_UBOOT_BASE		CONFIG_SYS_TEXT_BASE
 
 #define CONFIG_SETUP_MEMORY_TAGS
 #define CONFIG_CMDLINE_TAG
@@ -223,4 +224,24 @@
 #define CONFIG_USB_GADGET_S3C_UDC_OTG
 #define CONFIG_USB_GADGET_DUALSPEED
 
+/////////////////////////////////////////////////////////////////////////
+//
+// 使DMC0_MEMCONFIG_0与基地址匹配 2->3
+// E->F	是因为掩码是0x00000000->0x0fffffff(256M),0x0fffffff的取反 = 0xF0000000,故修改为F
+//#define DMC0_MEMCONFIG_0	0x20E01323	// MemConfig0	256MB config, 8 banks,Mapping Method[12:15]0:linear, 1:linterleaved, 2:Mixed
+#define DMC0_MEMCONFIG_0	0x30F01323	// MemConfig0	256MB config, 8 banks,Mapping Method[12:15]0:linear, 1:linterleaved, 2:Mixed
+#define DMC0_MEMCONFIG_1	0x40F01323	// MemConfig1
+#define DMC0_TIMINGA_REF	0x00000618	// TimingAref	7.8us*133MHz=1038(0x40E), 100MHz=780(0x30C), 20MHz=156(0x9C), 10MHz=78(0x4E)
+#define DMC0_TIMING_ROW		0x28233287	// TimingRow	for @200MHz
+#define DMC0_TIMING_DATA	0x23240304	// TimingData	CL=3
+#define	DMC0_TIMING_PWR		0x09C80232	// TimingPower
+
+#define	DMC1_MEMCONTROL		0x00202400	// MemControl	BL=4, 2 chip, DDR2 type, dynamic self refresh, force precharge, dynamic power down off
+#define DMC1_MEMCONFIG_0	0x40C01323	// MemConfig0	512MB config, 8 banks,Mapping Method[12:15]0:linear, 1:linterleaved, 2:Mixed
+#define DMC1_MEMCONFIG_1	0x00E01323	// MemConfig1
+#define DMC1_TIMINGA_REF	0x00000618	// TimingAref	7.8us*133MHz=1038(0x40E), 100MHz=780(0x30C), 20MHz=156(0x9C), 10MHz=78(0x4
+#define DMC1_TIMING_ROW		0x28233289	// TimingRow	for @200MHz
+#define DMC1_TIMING_DATA	0x23240304	// TimingData	CL=3
+#define	DMC1_TIMING_PWR		0x08280232	// TimingPower
+/////////////////////////////////////////////////////////////////////////
 #endif	/* __CONFIG_H */

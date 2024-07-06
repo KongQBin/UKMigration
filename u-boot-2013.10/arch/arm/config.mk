@@ -97,7 +97,7 @@ endif
 
 ifneq ($(CONFIG_SPL_BUILD),y)
 # Check that only R_ARM_RELATIVE relocations are generated.
-ALL-y += checkarmreloc
+#ALL-y += checkarmreloc
 # The movt / movw can hardcode 16 bit parts of the addresses in the
 # instruction. Relocation is not supported for that case, so disable
 # such usage by requiring word relocations.

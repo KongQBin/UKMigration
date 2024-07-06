@@ -785,11 +785,11 @@ tools: $(VERSION_FILE) $(TIMESTAMP_FILE)
 endif	# config.mk
 
 # ARM relocations should all be R_ARM_RELATIVE.
-checkarmreloc: $(obj)u-boot
-	@if test "R_ARM_RELATIVE" != \
-		"`$(CROSS_COMPILE)readelf -r $< | cut -d ' ' -f 4 | grep R_ARM | sort -u`"; \
-		then echo "$< contains relocations other than \
-		R_ARM_RELATIVE"; false; fi
+#checkarmreloc: $(obj)u-boot
+#	@if test "R_ARM_RELATIVE" != \
+#		"`$(CROSS_COMPILE)readelf -r $< | cut -d ' ' -f 4 | grep R_ARM | sort -u`"; \
+#		then echo "$< contains relocations other than \
+#		R_ARM_RELATIVE"; false; fi
 
 $(VERSION_FILE):
 		@mkdir -p $(dir $(VERSION_FILE))

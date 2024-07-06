@@ -198,7 +198,13 @@ skip_check_didle:
 	/* for UART */
 	bl	uart_asm_init
 
-	bl	internal_ram_init
+        // DDR 初始化
+        bl	mem_ctrl_asm_init
+
+//	bl	internal_ram_init
+
+        b	1f
+
 
 	cmp	r7, r8
 	/* Clear wakeup status register */
