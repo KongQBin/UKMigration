@@ -164,6 +164,9 @@ export	ARCH CPU BOARD VENDOR SOC
 ifeq ($(HOSTARCH),$(ARCH))
 CROSS_COMPILE ?=
 endif
+ifeq ($(ARCH),arm)
+CROSS_COMPILE = /usr/local/arm/arm-2009q3/bin/arm-none-linux-gnueabi-
+endif
 
 # load other configuration
 include $(TOPDIR)/config.mk
