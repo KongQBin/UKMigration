@@ -244,4 +244,59 @@
 #define DMC1_TIMING_DATA	0x23240304	// TimingData	CL=3
 #define	DMC1_TIMING_PWR		0x08280232	// TimingPower
 /////////////////////////////////////////////////////////////////////////
+#define CONFIG_IDENT_STRING	" for kb"
+#define CONFIG_EVT1		1		/* EVT1 */
+#if defined(CONFIG_EVT1)
+/* Set AFC value */
+#define AFC_ON		0x00000000
+#define AFC_OFF		0x10000010
+#endif
+
+#define APLL_LOCKTIME_VAL	0x2cf
+#define CLK_DIV0_MASK		0x7fffffff
+#define CONFIG_CLK_1000_200_166_133	    // 此处的时钟频率是对的，故无需修改
+/* CLK_DIV0 */
+#define APLL_RATIO	0
+#define A2M_RATIO	4
+#define HCLK_MSYS_RATIO	8
+#define PCLK_MSYS_RATIO	12
+#define HCLK_DSYS_RATIO	16
+#define PCLK_DSYS_RATIO 20
+#define HCLK_PSYS_RATIO	24
+#define PCLK_PSYS_RATIO 28
+
+#if defined(CONFIG_CLK_1000_200_166_133)
+#define APLL_MDIV       0x7d
+#define APLL_PDIV       0x3
+#define APLL_SDIV       0x1
+#endif
+#if defined(CONFIG_CLK_1000_200_166_133)
+#define CLK_DIV0_VAL    ((0<<APLL_RATIO)|(4<<A2M_RATIO)|(4<<HCLK_MSYS_RATIO)|(1<<PCLK_MSYS_RATIO)\
+			|(3<<HCLK_DSYS_RATIO)|(1<<PCLK_DSYS_RATIO)|(4<<HCLK_PSYS_RATIO)|(1<<PCLK_PSYS_RATIO))
+#endif
+
+#if defined(CONFIG_CLK_533_133_100_100)
+#define MPLL_MDIV	0x190
+#define MPLL_PDIV	0x6
+#define MPLL_SDIV	0x2
+#else
+#define MPLL_MDIV	0x29b
+#define MPLL_PDIV	0xc
+#define MPLL_SDIV	0x1
+#endif
+
+#define EPLL_MDIV	0x60
+#define EPLL_PDIV	0x6
+#define EPLL_SDIV	0x2
+
+#define VPLL_MDIV	0x6c
+#define VPLL_PDIV	0x6
+#define VPLL_SDIV	0x3
+#define set_pll(mdiv, pdiv, sdiv)	(1<<31 | mdiv<<16 | pdiv<<8 | sdiv)
+#define APLL_VAL	set_pll(APLL_MDIV,APLL_PDIV,APLL_SDIV)
+#define MPLL_VAL	set_pll(MPLL_MDIV,MPLL_PDIV,MPLL_SDIV)
+#define EPLL_VAL	set_pll(EPLL_MDIV,EPLL_PDIV,EPLL_SDIV)
+#define VPLL_VAL	set_pll(VPLL_MDIV,VPLL_PDIV,VPLL_SDIV)
+
+//////////////////////////////////////////////////////////////////////////
 #endif	/* __CONFIG_H */

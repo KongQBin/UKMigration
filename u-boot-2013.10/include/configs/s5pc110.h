@@ -65,12 +65,11 @@
 #define FInsrt(Value, Field)	(UData (Value) << FShft (Field))
 #define FExtr(Data, Field)	((UData (Data) >> FShft (Field)) & FAlnMsk (Field))
 
-#define CONFIG_EVT1		1		/* EVT1 */
 #define CFG_ENV_ADDR		0
 #define CFG_ENV_SIZE		0x4000	/* Total Size of Environment Sector */
 /* IROM specific data */
-#define SDMMC_BLK_SIZE        (0xD003A500)
-#define COPY_SDMMC_TO_MEM     (0xD003E008)
+#define SDMMC_BLK_SIZE		(0xD003A500)
+#define COPY_SDMMC_TO_MEM	(0xD003E008)
 
 #define BIT0 				0x00000001
 #define BIT1 				0x00000002

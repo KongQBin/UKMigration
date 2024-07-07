@@ -31,11 +31,12 @@ u32 get_device_type(void)
 int print_cpuinfo(void)
 {
 	char buf[32];
-
+/*
 	printf("CPU:\t%s%X@%sMHz\n",
 			s5p_get_cpu_name(), s5p_cpu_id,
 			strmhz(buf, get_arm_clk()));
-
+*/
+	printf("\nCPU:  S5PV210@%sMhz(%s)\n", strmhz(buf, get_arm_clk()), "OK");
 	return 0;
 }
 #endif
