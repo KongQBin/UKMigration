@@ -73,6 +73,10 @@ int checkboard(void)
 #ifdef CONFIG_GENERIC_MMC
 int board_mmc_init(bd_t *bis)
 {
+    setup_hsmmc_clock();
+    setup_hsmmc_cfg_gpio();
+    return smdk_s3c_hsmmc_init();
+
 	int i, ret, ret_sd = 0;
 
 	/* MASSMEMORY_EN: XMSMDATA7: GPJ2[7] output high */
@@ -100,6 +104,23 @@ int board_mmc_init(bd_t *bis)
 	if (ret)
 		error("MMC: Failed to init MMC:0.\n");
 
+	for (i = 0; i < 7; i++) {
+		if (i == 2)
+			continue;
+
+		/* GPG2[0:6] special function 2 */
+		s5p_gpio_cfg_pin(&s5pc110_gpio->g2, i, 0x2);
+		/* GPG2[0:6] pull disable */
+		s5p_gpio_set_pull(&s5pc110_gpio->g2, i, GPIO_PULL_NONE);
+		/* GPG2[0:6] drv 4x */
+		s5p_gpio_set_drv(&s5pc110_gpio->g2, i, GPIO_DRV_4X);
+	}
+
+	ret_sd = s5p_mmc_init(2, 4);
+	if (ret_sd)
+		error("MMC: Failed to init SD card (MMC:2).\n");
+
+	#if 0	// 此处不需要检测
 	/*
 	 * SD card (T_FLASH) detect and init
 	 * T_FLASH_DETECT: EINT28: GPH3[4] input mode
@@ -124,6 +145,7 @@ int board_mmc_init(bd_t *bis)
 		if (ret_sd)
 			error("MMC: Failed to init SD card (MMC:2).\n");
 	}
+	#endif
 
 	return ret & ret_sd;
 }

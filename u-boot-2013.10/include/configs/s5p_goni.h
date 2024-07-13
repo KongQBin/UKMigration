@@ -52,8 +52,15 @@
 /* MMC */
 #define CONFIG_GENERIC_MMC
 #define CONFIG_MMC
-#define CONFIG_SDHCI
-#define CONFIG_S5P_SDHCI
+//#define CONFIG_SDHCI
+//#define CONFIG_S5P_SDHCI
+#define CONFIG_S3C_HSMMC
+#define SDMMC_BLK_SIZE		(0xD003A500)
+#define COPY_SDMMC_TO_MEM	(0xD003E008)
+#define USE_MMC0
+#define USE_MMC2
+#define MMC_MAX_CHANNEL		4
+
 
 /* PWM */
 #define CONFIG_PWM			1
