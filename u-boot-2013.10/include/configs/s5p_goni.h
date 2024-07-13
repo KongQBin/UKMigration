@@ -71,7 +71,7 @@
 #undef CONFIG_CMD_XIMG
 #define CONFIG_CMD_CACHE
 #define CONFIG_CMD_REGINFO
-#define CONFIG_CMD_ONENAND
+//#define CONFIG_CMD_ONENAND
 #define CONFIG_CMD_MTDPARTS
 #define CONFIG_CMD_MMC
 
@@ -177,25 +177,27 @@
 #define CONFIG_SYS_HZ			1000
 
 /* Goni has 3 banks of DRAM, but swap the bank */
-#define CONFIG_NR_DRAM_BANKS	3
+#define CONFIG_NR_DRAM_BANKS	2
 #define PHYS_SDRAM_1		CONFIG_SYS_SDRAM_BASE	/* OneDRAM Bank #0 */
-#define PHYS_SDRAM_1_SIZE	(80 << 20)		/* 80 MB in Bank #0 */
+#define PHYS_SDRAM_1_SIZE	(256 << 20)		/* 256 MB in Bank #0 */
 #define PHYS_SDRAM_2		0x40000000		/* mDDR DMC1 Bank #1 */
 #define PHYS_SDRAM_2_SIZE	(256 << 20)		/* 256 MB in Bank #1 */
-#define PHYS_SDRAM_3		0x50000000		/* mDDR DMC2 Bank #2 */
-#define PHYS_SDRAM_3_SIZE	(128 << 20)		/* 128 MB in Bank #2 */
+//#define PHYS_SDRAM_3		0x50000000		/* mDDR DMC2 Bank #2 */
+//#define PHYS_SDRAM_3_SIZE	(128 << 20)		/* 128 MB in Bank #2 */
 
 #define CONFIG_SYS_MONITOR_BASE		0x00000000
 #define CONFIG_SYS_MONITOR_LEN		(256 << 10)	/* 256 KiB */
 
 /* FLASH and environment organization */
-#define CONFIG_ENV_IS_IN_ONENAND	1
-#define CONFIG_ENV_SIZE			(256 << 10)	/* 256 KiB, 0x40000 */
-#define CONFIG_ENV_ADDR			(1 << 20)	/* 1 MB, 0x100000 */
-
-#define CONFIG_USE_ONENAND_BOARD_INIT
-#define CONFIG_SAMSUNG_ONENAND		1
-#define CONFIG_SYS_ONENAND_BASE		0xB0000000
+//#define CONFIG_ENV_IS_IN_ONENAND	1
+//#define CONFIG_ENV_SIZE			(256 << 10)	/* 256 KiB, 0x40000 */
+//#define CONFIG_ENV_ADDR			(1 << 20)	/* 1 MB, 0x100000 */
+//#define CONFIG_USE_ONENAND_BOARD_INIT
+//#define CONFIG_SAMSUNG_ONENAND		1
+//#define CONFIG_SYS_ONENAND_BASE		0xB0000000
+#define CONFIG_ENV_IS_IN_MMC		1
+#define CONFIG_SYS_MMC_ENV_DEV		0	// 0 is inand 1 is sd
+#define CONFIG_ENV_SIZE			0x4000
 
 #define CONFIG_DOS_PARTITION		1
 
@@ -297,6 +299,7 @@
 #define MPLL_VAL	set_pll(MPLL_MDIV,MPLL_PDIV,MPLL_SDIV)
 #define EPLL_VAL	set_pll(EPLL_MDIV,EPLL_PDIV,EPLL_SDIV)
 #define VPLL_VAL	set_pll(VPLL_MDIV,VPLL_PDIV,VPLL_SDIV)
-
+// 机器码
+//#define CONFIG_MACH_TYPE    2456
 //////////////////////////////////////////////////////////////////////////
 #endif	/* __CONFIG_H */

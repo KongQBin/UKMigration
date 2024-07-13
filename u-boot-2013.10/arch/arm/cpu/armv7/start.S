@@ -142,9 +142,9 @@ reset:
 	bl	cpu_init_cp15
 	bl	cpu_init_crit
 #endif
-	ldr r1, =0x41414141
-        ldr r2, =0xE2900820
-	str r1, [r2]	@'A'
+//	ldr r1, =0x41414141
+//        ldr r2, =0xE2900820
+//	str r1, [r2]	@'A'
 
         ldr sp, _TEXT_BASE  /* setup temp stack pointer */
         sub sp, sp, #12

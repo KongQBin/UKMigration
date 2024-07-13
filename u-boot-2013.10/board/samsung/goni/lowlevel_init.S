@@ -196,6 +196,14 @@ skip_check_didle:
 	str	r5, [r1, #0xf00]			@ INTADDRESS
 	str	r5, [r2, #0xf00]			@ INTADDRESS
 
+        /* PS_HOLD pin(GPH0_0) set to high */
+	ldr r0, =(ELFIN_CLOCK_POWER_BASE + PS_HOLD_CONTROL_OFFSET)
+	ldr r1, [r0]
+	orr r1, r1, #0x300
+	orr r1, r1, #0x1
+	str r1, [r0]
+
+
         bl	system_clock_init
 	/* for UART */
 	bl	uart_asm_init
