@@ -89,12 +89,17 @@ void eth_random_enetaddr(uchar *enetaddr)
  * CPU and board-specific Ethernet initializations.  Aliased function
  * signals caller to move on
  */
+extern int dm9000_initialize(bd_t *bis);
+static int board_eth_init(bd_t *bis)
+{
+    return dm9000_initialize(bis);
+}
 static int __def_eth_init(bd_t *bis)
 {
 	return -1;
 }
 int cpu_eth_init(bd_t *bis) __attribute__((weak, alias("__def_eth_init")));
-int board_eth_init(bd_t *bis) __attribute__((weak, alias("__def_eth_init")));
+//int board_eth_init(bd_t *bis) __attribute__((weak, alias("__def_eth_init")));
 
 #ifdef CONFIG_API
 static struct {

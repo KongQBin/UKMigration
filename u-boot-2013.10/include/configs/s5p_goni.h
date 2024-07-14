@@ -73,7 +73,42 @@
 
 #undef CONFIG_CMD_FPGA
 #undef CONFIG_CMD_MISC
-#undef CONFIG_CMD_NET
+
+
+#define DM9000_16BIT_DATA
+
+#define CONFIG_DRIVER_DM9000	1
+
+#ifdef CONFIG_DRIVER_DM9000
+// CONFIG_DM9000_BASE 是 DM9000网卡通过SROM bank映射到SoC中地址空间中的地址
+// 该地址的值取决于硬件接到了哪个Bank，这个Bank的基地址是SoC定义好的
+/*
+ * Bank1 0x88000000
+ *     2 0x90000000
+ *   ... ...
+ *     5 0xA8000000
+*/
+//#define CONFIG_DM9000_BASE		(0xA8000000)
+//#define CONFIG_DM9000_BASE		(0x88000000)
+#define CONFIG_DM9000_BASE		(0x88000300)	// 可能与DM9000型号有关 需要继续偏移0x300
+// IO基地址
+#define DM9000_IO			(CONFIG_DM9000_BASE)
+#if defined(DM9000_16BIT_DATA)
+//#define DM9000_DATA			(CONFIG_DM9000_BASE+2)
+// 数据访问的基地址
+#define DM9000_DATA			(CONFIG_DM9000_BASE+4)	// ->0x88000004	高电平（4 = 0100）
+#else
+#define DM9000_DATA			(CONFIG_DM9000_BASE+1)
+#endif
+#endif
+
+
+
+
+// 添加网络支持
+//#undef CONFIG_CMD_NET
+#define CONFIG_CMD_PING	    // 添加ping命令
+
 #undef CONFIG_CMD_NFS
 #undef CONFIG_CMD_XIMG
 #define CONFIG_CMD_CACHE
