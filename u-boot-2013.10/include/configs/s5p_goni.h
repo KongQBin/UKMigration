@@ -88,6 +88,15 @@
 #define CONFIG_MTD_DEVICE
 #define CONFIG_MTD_PARTITIONS
 
+
+#define CONFIG_IPADDR       10.0.0.215
+#define CONFIG_SERVERIP     10.0.0.249
+#define CONFIG_GATEWAYIP    10.0.0.1
+#define CONFIG_NETMASK      255.255.255.0
+#define CONFIG_ETHADDR	    00:40:5c:26:0a:5b
+#define CONFIG_BOOTCOMMAND	"tftp 0x30008000 zImage-qt; bootm 0x30008000"
+#define CONFIG_BOOTARGS		"console=ttySAC2,115200 root=/dev/mmcblk0p2 rw init=/linuxrc rootfstype=ext3"
+#if 0
 /* Actual modem binary size is 16MiB. Add 2MiB for bad block handling */
 #define MTDIDS_DEFAULT		"onenand0=samsung-onenand"
 #define MTDPARTS_DEFAULT	"mtdparts=samsung-onenand:1m(bootloader)"\
@@ -166,7 +175,7 @@
 	"ubiblock=8\0" \
 	"ubi=enabled\0" \
 	"opts=always_resume=1"
-
+#endif
 /* Miscellaneous configurable options */
 #define CONFIG_SYS_LONGHELP		/* undef to save memory */
 #define CONFIG_SYS_HUSH_PARSER		/* use "hush" command parser	*/
@@ -308,5 +317,7 @@
 #define VPLL_VAL	set_pll(VPLL_MDIV,VPLL_PDIV,VPLL_SDIV)
 // 机器码
 //#define CONFIG_MACH_TYPE    2456
+// 环境变量起始扇区（第17个扇区）
+#define CONFIG_ENV_OFFSET   17*512
 //////////////////////////////////////////////////////////////////////////
 #endif	/* __CONFIG_H */
